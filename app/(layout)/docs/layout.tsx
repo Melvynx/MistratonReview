@@ -1,14 +1,16 @@
+"use cache";
+
 import type { ReactNode } from "react";
-import { DocSidebar, DocsMobileHeader } from "./_components/doc-sidebar";
-import { getDocs } from "./doc-manager";
+import { DocsMobileHeader, DocsSidebar } from "./_components/docs-sidebar";
+import { getDocsTree } from "./doc-manager";
 
 export default async function DocsLayout(props: { children: ReactNode }) {
-  const docs = await getDocs();
+  const tree = await getDocsTree();
 
   return (
     <div className="flex flex-1 flex-col lg:flex-row">
-      <DocsMobileHeader docs={docs} />
-      <DocSidebar docs={docs} />
+      <DocsMobileHeader tree={tree} />
+      <DocsSidebar tree={tree} />
       <main className="flex-1">{props.children}</main>
     </div>
   );

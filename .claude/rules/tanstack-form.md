@@ -1,5 +1,6 @@
 ---
-paths: "**/*.tsx"
+paths:
+  - "**/*.tsx"
 ---
 
 # TanStack Form Usage

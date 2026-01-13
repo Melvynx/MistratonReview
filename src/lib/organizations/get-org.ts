@@ -9,11 +9,14 @@ import { prisma } from "../prisma";
 import { getOrgActiveSubscription } from "./get-org-subscription";
 import { isInRoles } from "./is-in-roles";
 
+const getOrgSlugFromHeaders = async (): Promise<string | null> => {
+  const headersList = await headers();
+  return headersList.get("x-org-slug");
+};
+
 type OrgParams = {
   roles?: AuthRole[];
   permissions?: AuthPermission;
-  currentOrgId?: string;
-  currentOrgSlug?: string;
 };
 
 const getFullOrg = async (orgId: string, userId: string) => {
@@ -53,80 +56,36 @@ const getFullOrg = async (orgId: string, userId: string) => {
   });
 };
 
-const getOrg = async (params?: OrgParams) => {
+const getOrg = async () => {
   const user = await getSession();
 
-  if (user?.session.activeOrganizationId) {
-    return getFullOrg(user.session.activeOrganizationId, user.session.userId);
+  if (!user) {
+    return null;
   }
 
-  if (params?.currentOrgId) {
-    try {
-      await auth.api.setActiveOrganization({
-        headers: await headers(),
-        body: {
-          organizationId: params.currentOrgId,
-        },
-      });
+  const orgSlug = await getOrgSlugFromHeaders();
 
-      const updatedUser = await getSession();
-
-      if (updatedUser?.session.activeOrganizationId) {
-        return getFullOrg(
-          updatedUser.session.activeOrganizationId,
-          updatedUser.session.userId,
-        );
-      }
-    } catch (err) {
-      logger.error("Error setting active organization", err);
-    }
+  if (!orgSlug) {
+    logger.warn("No organization slug found in headers");
+    return null;
   }
 
-  if (params?.currentOrgSlug) {
-    try {
-      await auth.api.setActiveOrganization({
-        headers: await headers(),
-        body: {
-          organizationSlug: params.currentOrgSlug,
-        },
-      });
-
-      const updatedUser = await getSession();
-      if (updatedUser?.session.activeOrganizationId) {
-        return getFullOrg(
-          updatedUser.session.activeOrganizationId,
-          updatedUser.session.userId,
-        );
-      }
-    } catch (err) {
-      logger.error("Error setting active organization", err);
-    }
-  }
-
-  const firstOrg = await prisma.organization.findFirst({
-    where: {
-      members: {
-        some: { userId: user?.session.userId },
-      },
-    },
-  });
-
-  if (firstOrg) {
-    await auth.api.setActiveOrganization({
+  try {
+    const authOrg = await auth.api.getFullOrganization({
       headers: await headers(),
-      body: { organizationId: firstOrg.id },
+      query: { organizationSlug: orgSlug },
     });
 
-    const updatedUser = await getSession();
-    if (updatedUser?.session.activeOrganizationId) {
-      return getFullOrg(
-        updatedUser.session.activeOrganizationId,
-        updatedUser.session.userId,
-      );
+    if (!authOrg) {
+      logger.warn(`Organization not found for slug: ${orgSlug}`);
+      return null;
     }
-  }
 
-  return null;
+    return getFullOrg(authOrg.id, user.session.userId);
+  } catch (err) {
+    logger.error("Error fetching organization", err);
+    return null;
+  }
 };
 
 export const getCurrentOrg = async (params?: OrgParams) => {
@@ -136,7 +95,7 @@ export const getCurrentOrg = async (params?: OrgParams) => {
     return null;
   }
 
-  const org = await getOrg(params);
+  const org = await getOrg();
 
   if (!org) {
     return null;
@@ -158,6 +117,7 @@ export const getCurrentOrg = async (params?: OrgParams) => {
       headers: await headers(),
       body: {
         permission: params.permissions,
+        organizationId: org.id,
       },
     });
 

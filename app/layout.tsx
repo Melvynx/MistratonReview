@@ -1,5 +1,4 @@
 import { DebugPanel } from "@/features/debug";
-import { FloatingLegalFooter } from "@/features/legal/floating-legal-footer";
 import { NextTopLoader } from "@/features/page/next-top-loader";
 import { ServerToaster } from "@/features/server-sonner/server-toaster";
 import { getServerUrl } from "@/lib/server-url";
@@ -57,7 +56,6 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
               {modal}
             </Suspense>
             {process.env.NODE_ENV === "production" ? null : <DebugPanel />}
-            <FloatingLegalFooter />
             <Suspense>
               <ServerToaster />
             </Suspense>

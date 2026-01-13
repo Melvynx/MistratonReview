@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useCurrentOrg } from "../../../use-current-org";
 
 const Schema = z.object({
   email: z.string().email(),
@@ -35,12 +36,18 @@ type SchemaType = z.infer<typeof Schema>;
 
 export const OrganizationInviteMemberForm = () => {
   const [open, setOpen] = useState(false);
-  const { data: activeOrg } = authClient.useActiveOrganization();
+  const activeOrg = useCurrentOrg();
   const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: async (values: SchemaType) => {
+      if (!activeOrg) {
+        toast.error("No active organization");
+        return;
+      }
+
       const result = await authClient.organization.inviteMember({
+        organizationId: activeOrg.id,
         email: values.email,
         role: values.role as AuthRole,
       });
@@ -76,8 +83,8 @@ export const OrganizationInviteMemberForm = () => {
         <DialogHeader className="p-6">
           <div className="mt-4 flex justify-center">
             <Avatar className="size-16">
-              {activeOrg?.logo ? (
-                <AvatarImage src={activeOrg.logo} alt={activeOrg.name} />
+              {activeOrg?.image ? (
+                <AvatarImage src={activeOrg.image} alt={activeOrg.name} />
               ) : null}
               <AvatarFallback>
                 {activeOrg?.name.substring(0, 1).toUpperCase()}

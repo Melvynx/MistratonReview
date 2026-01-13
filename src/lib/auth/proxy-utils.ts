@@ -44,14 +44,11 @@ export const validateSession = async (request: NextRequest) => {
 
   if (!sessionCookie) return null;
 
-  const [session, activeOrganisation] = await Promise.all([
-    auth.api.getSession({ headers: request.headers }),
-    auth.api.getFullOrganization({ headers: request.headers }),
-  ]);
+  const session = await auth.api.getSession({ headers: request.headers });
 
   if (!session?.session) return null;
 
-  return { session, activeOrganisation };
+  return session;
 };
 
 export const findUserOrganization = async (slug: string, userId: string) => {
@@ -127,18 +124,6 @@ export const getFirstUserOrganization = async (userId: string) => {
   }
 
   return org;
-};
-
-export const switchActiveOrganization = async (
-  request: NextRequest,
-  organizationId: string,
-) => {
-  await auth.api.setActiveOrganization({
-    headers: request.headers,
-    body: { organizationId },
-  });
-
-  return NextResponse.redirect(request.url);
 };
 
 export const redirectToOrgList = (request: NextRequest) => {

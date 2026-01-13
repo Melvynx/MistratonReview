@@ -12,7 +12,7 @@ import { NewOrganizationForm } from "./new-org-form";
 export default async function Page() {
   return (
     <AccountNavigation>
-      <Layout>
+      <Layout size="lg">
         <LayoutHeader>
           <LayoutTitle>Create a new organization</LayoutTitle>
         </LayoutHeader>

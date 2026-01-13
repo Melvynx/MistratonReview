@@ -42,7 +42,7 @@ export const NewOrganizationForm = () => {
     <div className="flex w-full flex-col gap-6 lg:gap-8">
       <Card className="bg-card overflow-hidden">
         <Form form={form}>
-          <CardContent className="mt-6 flex flex-col gap-4 lg:gap-6">
+          <CardContent className="flex flex-col gap-4 lg:gap-6">
             <form.AppField name="name">
               {(field) => (
                 <field.Field>
@@ -104,7 +104,7 @@ export const NewOrganizationForm = () => {
               )}
             </form.AppField>
           </CardContent>
-          <CardFooter className="border-border flex justify-end border-t pt-6">
+          <CardFooter className="border-border mt-6 flex justify-end border-t">
             <form.SubmitButton size="lg">Create organization</form.SubmitButton>
           </CardFooter>
         </Form>

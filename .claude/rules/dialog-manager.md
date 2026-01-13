@@ -1,99 +1,45 @@
 ---
-paths: "**/*.tsx"
+paths:
+  - "**/*.tsx"
 ---
 
-# Dialog Manager Usage
+# Dialog Manager
 
-Use `dialogManager` for global modals instead of managing dialog state manually.
+Use `dialogManager` from `@/features/dialog-manager/dialog-manager` for global modals.
 
-## Import
-
-```tsx
-import { dialogManager } from "@/features/dialog-manager/dialog-manager";
-```
-
-## Confirm Dialog
-
-For confirmation prompts with action/cancel buttons:
+## Types
 
 ```tsx
+// Confirmation dialog
 dialogManager.confirm({
   title: "Delete Item",
-  description:
-    "Are you sure you want to delete this item? This action cannot be undone.",
+  description: "Are you sure?",
   variant: "destructive", // "default" | "destructive" | "warning"
   action: {
     label: "Delete",
-    variant: "destructive",
-    onClick: async () => {
-      await deleteItem(id);
-    },
-  },
-  cancel: {
-    label: "Cancel",
+    onClick: async () => await deleteItem(id),
   },
 });
-```
 
-## Input Dialog
-
-For prompts that require user input:
-
-```tsx
+// Input dialog
 dialogManager.input({
   title: "Rename Item",
-  description: "Enter a new name for this item.",
-  input: {
-    label: "Name",
-    defaultValue: currentName,
-    placeholder: "Enter name...",
-  },
+  input: { label: "Name", defaultValue: currentName },
   action: {
     label: "Save",
-    onClick: async (inputValue) => {
-      await renameItem(id, inputValue);
-    },
+    onClick: async (value) => await renameItem(id, value),
   },
 });
-```
 
-## Custom Dialog
-
-For complex dialogs with custom content:
-
-```tsx
+// Custom dialog
 dialogManager.custom({
-  title: "Custom Dialog",
+  title: "Custom",
   size: "lg", // "sm" | "md" | "lg"
-  children: <MyCustomComponent onClose={() => dialogManager.closeAll()} />,
+  children: <MyComponent onClose={() => dialogManager.closeAll()} />,
 });
 ```
 
-## Dialog Options
+## Notes
 
-All dialogs support these base options:
-
-```tsx
-{
-  title?: string;
-  description?: ReactNode;
-  icon?: LucideIcon;
-  variant?: "default" | "destructive" | "warning";
-  size?: "sm" | "md" | "lg";
-  style?: "default" | "centered";
-}
-```
-
-## Closing Dialogs
-
-```tsx
-// Close a specific dialog by id
-dialogManager.close(dialogId);
-
-// Close all dialogs
-dialogManager.closeAll();
-```
-
-## Automatic Loading States
-
-Action buttons automatically show loading state while `onClick` promise is pending. No manual loading state management needed.
+- Action buttons auto-handle loading state during async operations
+- Use `dialogManager.close(id)` or `dialogManager.closeAll()` to close

@@ -8,7 +8,6 @@ import {
   isReservedSlug,
   redirectToOrgList,
   redirectToRoot,
-  switchActiveOrganization,
   validateAdminAccess,
   validateSession,
 } from "@/lib/auth/proxy-utils";
@@ -37,10 +36,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionData = await validateSession(request);
-  if (!sessionData) return NextResponse.next();
-
-  const { session, activeOrganisation } = sessionData;
+  const session = await validateSession(request);
+  if (!session) return NextResponse.next();
 
   if (slug === "default") {
     const firstOrg = await getFirstUserOrganization(session.session.userId);
@@ -48,10 +45,6 @@ export async function proxy(request: NextRequest) {
       return buildOrgRedirectUrl(request, firstOrg.slug);
     }
     return redirectToOrgList(request);
-  }
-
-  if (activeOrganisation?.slug === slug) {
-    return NextResponse.next();
   }
 
   const org = await findUserOrganization(slug, session.session.userId);
@@ -64,7 +57,9 @@ export async function proxy(request: NextRequest) {
     return buildOrgRedirectUrl(request, org.slug);
   }
 
-  return switchActiveOrganization(request, org.id);
+  const response = NextResponse.next();
+  response.headers.set("x-org-slug", org.slug ?? slug);
+  return response;
 }
 
 export const config = {

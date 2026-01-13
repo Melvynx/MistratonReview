@@ -1,6 +1,5 @@
 "use client";
 
-import { ImageDropzone } from "@/features/images/image-dropzone";
 import { Typography } from "@/components/nowts/typography";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -8,16 +7,15 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { InlineTooltip } from "@/components/ui/tooltip";
 import { LoadingButton } from "@/features/form/submit-button";
 import { Form, useForm } from "@/features/form/tanstack-form";
+import AvatarUpload from "@/features/images/avatar-upload";
 import { uploadImageAction } from "@/features/images/upload-image.action";
 import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { authClient } from "@/lib/auth-client";
-import { displayName } from "@/lib/format/display-name";
 import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation } from "@tanstack/react-query";
 import type { User } from "better-auth";
@@ -104,26 +102,14 @@ export const EditProfileCardForm = ({
           <div className="flex items-center gap-2">
             <form.AppField name="image">
               {(field) => (
-                <ImageDropzone
-                  variant="avatar"
+                <AvatarUpload
                   onChange={(file) => uploadImageMutation.mutate(file)}
-                  value={field.state.value}
-                  isUploading={uploadImageMutation.isPending}
                   onRemove={() => field.setValue(null)}
+                  initialFile={field.state.value ?? undefined}
+                  isPending={uploadImageMutation.isPending}
                 />
               )}
             </form.AppField>
-
-            <form.Subscribe selector={(state) => state.values.name}>
-              {(name) => (
-                <CardTitle>
-                  {displayName({
-                    email: defaultValues.email,
-                    name: name,
-                  })}
-                </CardTitle>
-              )}
-            </form.Subscribe>
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">

@@ -9,13 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authClient } from "@/lib/auth-client";
 import type { AppAuthPlan } from "@/lib/auth/stripe/auth-plans";
 import {
   ADDITIONAL_FEATURES,
   LIMITS_CONFIG,
 } from "@/lib/auth/stripe/auth-plans";
 import { cn } from "@/lib/utils";
+import { useCurrentOrg } from "@app/orgs/[orgSlug]/use-current-org";
 import { Clock } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
@@ -30,7 +30,7 @@ export function PricingCard({
   isYearly?: boolean;
 }) {
   // Get the active organization
-  const { data: activeOrg } = authClient.useActiveOrganization();
+  const activeOrg = useCurrentOrg();
 
   const { execute: upgradeOrg, isPending } = useAction(upgradeOrgAction, {
     onSuccess: (result) => {

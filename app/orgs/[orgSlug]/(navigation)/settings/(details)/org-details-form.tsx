@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Form, useForm } from "@/features/form/tanstack-form";
-import { ImageDropzone } from "@/features/images/image-dropzone";
+import AvatarUpload from "@/features/images/avatar-upload";
 import { uploadImageAction } from "@/features/images/upload-image.action";
 import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { authClient } from "@/lib/auth-client";
@@ -90,13 +90,11 @@ export const OrgDetailsForm = ({ defaultValues }: ProductFormProps) => {
               {(field) => (
                 <field.Field>
                   <field.Content>
-                    <ImageDropzone
-                      variant="avatar"
-                      className="size-32"
+                    <AvatarUpload
                       onChange={(file) => uploadImageMutation.mutate(file)}
-                      value={field.state.value}
-                      isUploading={uploadImageMutation.isPending}
                       onRemove={() => field.setValue(null)}
+                      initialFile={field.state.value ?? undefined}
+                      isPending={uploadImageMutation.isPending}
                     />
                     <field.Message />
                   </field.Content>

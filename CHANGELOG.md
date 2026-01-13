@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-01-13
+
+CHORE: Remove 14 unused files including admin components, docs components, and utility files
+CHORE: Remove 5 unused dependencies (@ai-sdk/openai, ai, @types/react-syntax-highlighter, radix-ui, ts-node) saving ~3MB
+REFACTOR: Remove duplicated FileMetadata type from avatar-upload.tsx, import from use-file-upload.ts instead
+REFACTOR: Replace session-based organization context with URL slug-based routing using middleware headers for multi-tab support
+FIX: Update hasPermission to pass explicit organizationId for Better Auth compatibility
+REFACTOR: Move legal and docs links from floating footer to minimal sidebar navigation above Settings button with text-xs
+
 ## 2026-01-02
 
 REFACTOR: Add cacheLife("max") to docs, changelog, and posts pages for 30-day cache instead of 15-minute default

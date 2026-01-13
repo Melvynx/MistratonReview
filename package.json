@@ -31,7 +31,6 @@
     "seed": "pnpm tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.86",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
@@ -65,9 +64,7 @@
     "@tanstack/react-form": "^1.27.3",
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.91.1",
-    "@types/react-syntax-highlighter": "^15.5.13",
     "@vercel/blob": "^2.0.0",
-    "ai": "^5.0.113",
     "better-auth": "^1.4.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -88,7 +85,6 @@
     "nprogress": "^0.2.0",
     "nuqs": "^2.8.5",
     "pg": "^8.16.3",
-    "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-email": "5.0.8",
@@ -144,7 +140,6 @@
     "prisma": "^7.1.0",
     "shadcn": "^3.6.1",
     "tailwindcss": "^4.1.18",
-    "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.49.0",

@@ -1,22 +1,22 @@
 ---
-paths: "**/route.ts"
+paths:
+  - "app/**/route.ts"
 ---
 
-# API Routes with Zod Route
+# API Routes
 
-**CRITICAL**: All API routes (`route.ts` files) MUST use `@/lib/zod-route.ts`
+**CRITICAL**: All API routes MUST use `@/lib/zod-route.ts`
 
-ALWAYS read `src/lib/zod-route.ts` before creating any routes.
+ALWAYS read `src/lib/zod-route.ts` before creating routes.
 
-## Import
+## Usage
 
 ```ts
 import { route, authRoute, orgRoute } from "@/lib/zod-route";
-```
+import { ZodRouteError } from "@/lib/errors/zod-route-error";
+import { ApplicationError } from "@/lib/errors/application-error";
 
-## Basic Route
-
-```ts
+// Public route
 export const POST = route
   .params(z.object({ id: z.string() })) // URL params
   .body(z.object({ name: z.string() })) // Request body
@@ -24,56 +24,29 @@ export const POST = route
   .handler(async (req, { params, body, query }) => {
     return { success: true };
   });
-```
 
-## Authenticated Route
-
-Requires user to be logged in:
-
-```ts
+// Authenticated route (ctx.user available)
 export const GET = authRoute
   .params(z.object({ id: z.string() }))
   .handler(async (req, { params, ctx }) => {
-    // ctx.user is available
     return { data: ctx.user };
   });
-```
 
-## Organization Route
-
-Requires user to be part of an organization with specific permissions:
-
-```ts
+// Organization route (ctx.organization available)
 export const POST = orgRoute
   .metadata({ permissions: { users: ["create"] } })
   .body(z.object({ email: z.string().email() }))
   .handler(async (req, { body, ctx }) => {
-    // ctx.organization is available
     return { success: true };
   });
 ```
 
-## Route Types
-
-| Route       | Use Case                                                |
-| ----------- | ------------------------------------------------------- |
-| `route`     | Public endpoints, no auth required                      |
-| `authRoute` | Requires logged-in user                                 |
-| `orgRoute`  | Requires organization membership + optional permissions |
-
 ## Error Handling
 
-Routes automatically handle errors:
-
-- `ZodRouteError` - Returns custom status code
-- `ApplicationError` - Returns 400
-- Unknown errors - Returns 500 (message hidden in production)
-
 ```ts
-import { ZodRouteError } from "@/lib/errors/zod-route-error";
-import { ApplicationError } from "@/lib/errors/application-error";
-
-// In handler:
+// Custom status code
 throw new ZodRouteError("Not found", 404);
+
+// 400 error
 throw new ApplicationError("Invalid operation");
 ```

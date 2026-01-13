@@ -12,7 +12,7 @@ import { DocsApiExamples } from "../_components/docs-api-examples";
 import { DocsCopyPage } from "../_components/docs-copy-page";
 import { DocsTableOfContents, type TocItem } from "../_components/docs-toc";
 import type { DocParams } from "../doc-manager";
-import { getCurrentDoc, getDocs } from "../doc-manager";
+import { getAllDocs, getCurrentDoc } from "../doc-manager";
 
 export async function generateMetadata(props: DocParams): Promise<Metadata> {
   "use cache";
@@ -32,10 +32,10 @@ export async function generateMetadata(props: DocParams): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const docs = await getDocs();
+  const docs = await getAllDocs();
 
   return docs.map((doc) => ({
-    slug: doc.slug,
+    slug: doc.slug === "" ? undefined : doc.slug.split("/"),
   }));
 }
 
@@ -73,21 +73,12 @@ export default async function page(props: DocParams) {
     notFound();
   }
 
-  const docs = await getDocs();
-  const sortedDocs = docs.sort((a, b) => {
-    if (a.attributes.order !== undefined && b.attributes.order !== undefined) {
-      return a.attributes.order - b.attributes.order;
-    }
-    return a.attributes.title.localeCompare(b.attributes.title);
-  });
+  const docs = await getAllDocs();
 
-  const currentIndex = sortedDocs.findIndex((d) => d.slug === doc.slug);
+  const currentIndex = docs.findIndex((d) => d.slug === doc.slug);
   const neighbours = {
-    previous: currentIndex > 0 ? sortedDocs[currentIndex - 1] : null,
-    next:
-      currentIndex < sortedDocs.length - 1
-        ? sortedDocs[currentIndex + 1]
-        : null,
+    previous: currentIndex > 0 ? docs[currentIndex - 1] : null,
+    next: currentIndex < docs.length - 1 ? docs[currentIndex + 1] : null,
   };
 
   const method = doc.attributes.method as

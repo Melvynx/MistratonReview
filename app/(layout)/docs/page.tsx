@@ -12,7 +12,7 @@ import { SiteConfig } from "@/site-config";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getDocs } from "./doc-manager";
+import { getAllDocs } from "./doc-manager";
 
 export const metadata = {
   title: `Documentation | ${SiteConfig.title}`,
@@ -30,7 +30,7 @@ export default function Page(props: PageProps<"/docs">) {
 async function DocsPage(_props: PageProps<"/docs">) {
   "use cache";
   cacheLife("max");
-  const docs = await getDocs();
+  const docs = await getAllDocs();
 
   const sortedDocs = [...docs].sort((a, b) => {
     if (a.attributes.order !== undefined && b.attributes.order !== undefined) {

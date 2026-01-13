@@ -42,13 +42,14 @@ test("invite and login as invited user", async ({ page }) => {
   // Send invitation
   await page.getByRole("button", { name: /invite/i }).click();
 
-  // Wait for the invitation to be sent
-  await page.waitForTimeout(1000);
+  // Wait for the invite dialog to close
+  await page
+    .getByRole("dialog", { name: /invite teammates/i })
+    .waitFor({ state: "hidden", timeout: 10000 });
 
   // Click on the invitations tab to view pending invitations
-  // The test is failing because the "Invitations" element is a tab, not a button
-  // Based on the page snapshot, we need to use getByRole("tab") instead
-  await page.getByRole("tab", { name: /invitations/i }).click();
+  const invitationsTab = page.getByRole("tab", { name: /invitations/i });
+  await invitationsTab.click();
 
   // 7. Verify the invitation appears in the list
   await expect(page.getByText(memberEmail)).toBeVisible();

@@ -92,6 +92,31 @@ export function OrgSidebar({
             )}
             <ChangelogDebugActions />
             <UpgradeCard />
+            <div className="flex items-center gap-3">
+              <Link
+                href="/docs"
+                className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+                prefetch={false}
+              >
+                Docs
+              </Link>
+              {changelogs.length === 0 && (
+                <Link
+                  href="/changelog"
+                  className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+                  prefetch={false}
+                >
+                  Changelog
+                </Link>
+              )}
+              <Link
+                href="/legal/terms"
+                className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+                prefetch={false}
+              >
+                Terms
+              </Link>
+            </div>
             <Button variant="outline" asChild size="sm">
               <Link href={`/orgs/${slug}/settings`} prefetch={false}>
                 <Settings className="size-4" />
