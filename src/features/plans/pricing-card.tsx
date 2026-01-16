@@ -15,7 +15,7 @@ import {
   LIMITS_CONFIG,
 } from "@/lib/auth/stripe/auth-plans";
 import { cn } from "@/lib/utils";
-import { useCurrentOrg } from "@app/orgs/[orgSlug]/use-current-org";
+import { useCurrentOrg } from "@/hooks/use-current-org";
 import { Clock } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";

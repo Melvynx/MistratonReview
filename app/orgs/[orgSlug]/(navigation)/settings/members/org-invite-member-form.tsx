@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useCurrentOrg } from "../../../use-current-org";
+import { useCurrentOrg } from "@/hooks/use-current-org";
 
 const Schema = z.object({
   email: z.string().email(),

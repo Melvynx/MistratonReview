@@ -45,7 +45,7 @@ import { Copy, MoreVertical, Trash, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useOptimistic } from "react";
 import { toast } from "sonner";
-import { useCurrentOrg } from "../../../use-current-org";
+import { useCurrentOrg } from "@/hooks/use-current-org";
 import { OrganizationInviteMemberForm } from "./org-invite-member-form";
 
 type OrgMembersFormProps = {
@@ -88,10 +88,14 @@ export const OrgMembersForm = ({
       role: AuthRole;
     }) => {
       // Using BetterAuth client to update member role
+      if (!org?.id) {
+        throw new Error("Organization ID is required");
+      }
       return unwrapSafePromise(
         authClient.organization.updateMemberRole({
           memberId,
           role,
+          organizationId: org.id,
         }),
       );
     },

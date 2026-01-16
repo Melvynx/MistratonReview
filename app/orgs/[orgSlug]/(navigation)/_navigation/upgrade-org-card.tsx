@@ -7,7 +7,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import Link from "next/link";
-import { useCurrentOrg } from "../../use-current-org";
+import { useCurrentOrg } from "@/hooks/use-current-org";
 
 export const UpgradeCard = () => {
   const org = useCurrentOrg();

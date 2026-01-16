@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCurrentOrg } from "../../use-current-org";
+import { useCurrentOrg } from "@/hooks/use-current-org";
 
 export const ClientOrg = () => {
   const org = useCurrentOrg();

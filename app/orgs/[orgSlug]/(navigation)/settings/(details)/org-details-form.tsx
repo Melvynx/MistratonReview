@@ -16,7 +16,7 @@ import { unwrapSafePromise } from "@/lib/promises";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useCurrentOrg } from "../../../use-current-org";
+import { useCurrentOrg } from "@/hooks/use-current-org";
 import {
   OrgDetailsFormSchema,
   type OrgDetailsFormSchemaType,

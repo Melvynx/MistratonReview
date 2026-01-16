@@ -1,8 +1,8 @@
+import { OrgProvider } from "@/features/organization/org-provider";
 import { orgMetadata } from "@/lib/metadata";
 import { getRequiredCurrentOrgCache } from "@/lib/react/cache";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { InjectCurrentOrgStore } from "./use-current-org";
 
 export async function generateMetadata(
   props: LayoutProps<"/orgs/[orgSlug]">,
@@ -27,7 +27,7 @@ export default async function RouteLayout(
 const LayoutPage = async () => {
   const org = await getRequiredCurrentOrgCache();
   return (
-    <InjectCurrentOrgStore
+    <OrgProvider
       org={{
         id: org.id,
         slug: org.slug,
