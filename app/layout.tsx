@@ -46,11 +46,7 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
       >
         <NuqsAdapter>
           <Providers>
-            <NextTopLoader
-              delay={100}
-              showSpinner={false}
-              color="hsl(var(--primary))"
-            />
+            <NextTopLoader delay={100} showSpinner={false} />
             <Suspense fallback={null}>
               {children}
               {modal}
