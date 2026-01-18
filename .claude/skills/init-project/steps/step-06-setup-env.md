@@ -95,6 +95,13 @@ Parse all environment variables and their current values (empty or filled).
 **How to get:**
 ```
 # English
+FOR LOCAL DEVELOPMENT:
+1. Download Postgres.app from https://postgresapp.com
+2. Install and start the app
+3. Create a new database: CREATE DATABASE {app_name_kebab};
+4. Use: postgresql://localhost:5432/{app_name_kebab}
+
+FOR PRODUCTION:
 1. Go to https://neon.tech (recommended) or https://supabase.com
 2. Create a new project
 3. Go to Dashboard → Connection Details
@@ -104,6 +111,13 @@ Parse all environment variables and their current values (empty or filled).
 Format: postgresql://user:password@host:port/database?sslmode=require
 
 # French
+POUR LE DÉVELOPPEMENT LOCAL:
+1. Téléchargez Postgres.app depuis https://postgresapp.com
+2. Installez et démarrez l'app
+3. Créez une base: CREATE DATABASE {app_name_kebab};
+4. Utilisez: postgresql://localhost:5432/{app_name_kebab}
+
+POUR LA PRODUCTION:
 1. Allez sur https://neon.tech (recommandé) ou https://supabase.com
 2. Créez un nouveau projet
 3. Allez dans Dashboard → Connection Details
@@ -122,31 +136,33 @@ Format: postgresql://user:password@host:port/database?sslmode=require
 **How to get:**
 ```
 # English
-Option 1 - Upstash (recommended, free tier):
+RECOMMENDED - Vercel KV (Redis):
+1. Go to Vercel Dashboard > Storage > Create Database > KV
+2. Connect it to your project
+3. The KV_URL is automatically added to your environment
+4. Use KV_URL as REDIS_URL (they're compatible)
+
+Alternative - Upstash (free tier):
 1. Go to https://upstash.com
 2. Create a Redis database
 3. Copy the Redis URL from the dashboard
 
-Option 2 - Railway ($5/mo):
-1. Go to https://railway.app
-2. Add a Redis service
-3. Copy the connection URL
-
-Option 3 - Local development:
+Local development:
 Use: redis://localhost:6379 (requires Docker or local Redis)
 
 # French
-Option 1 - Upstash (recommandé, gratuit):
+RECOMMANDÉ - Vercel KV (Redis):
+1. Allez dans Vercel Dashboard > Storage > Create Database > KV
+2. Connectez-le à votre projet
+3. KV_URL est automatiquement ajouté à votre environnement
+4. Utilisez KV_URL comme REDIS_URL (ils sont compatibles)
+
+Alternative - Upstash (gratuit):
 1. Allez sur https://upstash.com
 2. Créez une base Redis
 3. Copiez l'URL Redis depuis le dashboard
 
-Option 2 - Railway (5$/mois):
-1. Allez sur https://railway.app
-2. Ajoutez un service Redis
-3. Copiez l'URL de connexion
-
-Option 3 - Développement local:
+Développement local:
 Utilisez: redis://localhost:6379 (nécessite Docker ou Redis local)
 ```
 
@@ -187,22 +203,20 @@ Utilisez: redis://localhost:6379 (nécessite Docker ou Redis local)
 
 **What:** Secret key for authentication encryption
 
-**How to get:**
-```
-# English
-Generate a random secret with:
-openssl rand -base64 32
+**AUTO-GENERATE THIS - DO NOT ASK USER:**
 
-Or use: https://generate-secret.vercel.app/32
-
-# French
-Générez un secret aléatoire avec:
-openssl rand -base64 32
-
-Ou utilisez: https://generate-secret.vercel.app/32
+```bash
+# Generate and store the secret automatically
+SECRET=$(openssl rand -base64 32)
+echo "BETTER_AUTH_SECRET=$SECRET"
 ```
 
-**Auto-generate option:** Offer to run `openssl rand -base64 32` automatically.
+**Execution:**
+1. Run `openssl rand -base64 32` to generate a secret
+2. Automatically update .env with the generated value
+3. Inform user: "Generated BETTER_AUTH_SECRET automatically"
+
+**DO NOT ask user to paste this - generate it yourself!**
 
 ---
 

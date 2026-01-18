@@ -9,18 +9,19 @@ next_step: steps/step-05-update-landing.md
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
-- 🛑 NEVER modify globals.css manually - use the CLI command
-- ✅ ALWAYS run the exact command user provided from tinte.dev
-- 📋 YOU ARE a theme installer using shadcn CLI
-- 💬 FOCUS on running the command and verifying results
-- 🚫 FORBIDDEN to guess or construct theme URLs
+- 🛑 NEVER lose NOWTS custom CSS (success, warning, info colors)
+- ✅ ALWAYS use `git diff` after applying theme to check for lost data
+- ✅ ALWAYS restore any deleted NOWTS custom CSS
+- 📋 YOU ARE a theme installer with data preservation responsibility
+- 💬 FOCUS on applying theme while preserving custom styles
+- 🚫 FORBIDDEN to skip the git diff verification step
 
 ## EXECUTION PROTOCOLS:
 
-- 🎯 Use the exact CLI command from tinte.dev
-- 💾 Run the command with automatic overwrite flag
-- 📖 Verify theme was applied correctly
-- 🚫 FORBIDDEN to manually edit CSS variables
+- 🎯 Run the theme command with --overwrite flag
+- 💾 Use `git diff app/globals.css` to check what changed
+- 📖 Look for deleted lines containing NOWTS, --success, --warning, --info
+- 🚫 FORBIDDEN to proceed if critical data was deleted without restoring it
 
 ## CONTEXT BOUNDARIES:
 
@@ -99,24 +100,71 @@ npx shadcn@latest add https://www.tinte.dev/r/mono --overwrite
   - Invalid URL: Ask user to verify URL from tinte.dev
   - Permission error: Check file permissions
 
-### 5. Verify Theme Applied
+### 5. VERIFY NO DATA LOST WITH GIT DIFF (CRITICAL)
 
-**Read globals.css to confirm changes:**
+**Immediately after theme is applied, use git diff to check what changed:**
 
 ```bash
-Read: /Users/melvynx/Developer/indie/nowts/app/globals.css
+git diff app/globals.css
 ```
 
-**Look for theme-specific indicators:**
-- New color values in `:root` and `.dark` sections
-- Theme name may appear in comments
+**Look for deleted lines (lines starting with `-`) containing:**
 
-**Run TypeScript check:**
+| Critical Content | If Deleted |
+|------------------|------------|
+| `/* NOWTS */` | Must restore NOWTS custom colors |
+| `--success:` | Must restore success color |
+| `--warning:` | Must restore warning color |
+| `--info:` | Must restore info color |
+| `@layer base` | Must restore base layer styles |
+| `#nprogress` | Must restore NProgress styles |
+
+**IF ANY CRITICAL DATA WAS DELETED:**
+
+1. **Get the deleted content from git:**
+```bash
+git diff app/globals.css | grep "^-" | grep -E "(NOWTS|--success|--warning|--info|@layer base|nprogress)"
+```
+
+2. **Manually add back the missing sections:**
+
+   **NOWTS colors for `:root`** (add before closing `}` of `:root`):
+   ```css
+   /* NOWTS */
+   --success: hsl(151 55% 41%);
+   --success-foreground: hsl(137 72% 94%);
+   --warning: hsl(24 94% 50%);
+   --warning-foreground: hsl(24 97% 93%);
+   --info: hsl(221.2 83.2% 53.3%);
+   --info-foreground: hsl(210 40% 98%);
+   ```
+
+   **NOWTS colors for `.dark`** (add before closing `}` of `.dark`):
+   ```css
+   /* NOWTS */
+   --success: hsl(151deg 55% 41.5%);
+   --success-foreground: hsl(137 72% 94%);
+   --warning: hsl(24deg 94% 50%);
+   --warning-foreground: hsl(24deg 97% 93.2%);
+   --info: hsl(217.2 91.2% 59.8%);
+   --info-foreground: hsl(222.2 47.4% 11.2%);
+   ```
+
+3. **If too much was lost, REVERT entirely:**
+```bash
+git checkout app/globals.css
+```
+
+Then inform user the theme was not applied to preserve customizations.
+
+### 6. Run TypeScript Check
+
+**Verify no TypeScript errors:**
 ```bash
 pnpm ts
 ```
 
-### 6. Report Results
+### 7. Report Results
 
 **English:**
 ```
@@ -198,20 +246,18 @@ Browse themes at https://www.tinte.dev
 
 ## SUCCESS METRICS:
 
-✅ Theme command validated
-✅ Command executed with --overwrite flag
-✅ globals.css updated with new theme
+✅ Theme command validated and executed
+✅ `git diff app/globals.css` run to check changes
+✅ No NOWTS custom colors deleted (or restored if deleted)
+✅ No @layer base styles deleted (or restored if deleted)
 ✅ TypeScript verification passes
-✅ User informed of changes
-✅ Instructions for changing theme provided
 
 ## FAILURE MODES:
 
-❌ Manually editing CSS instead of using CLI
-❌ Running command without --overwrite (causes prompts)
-❌ Not validating command format
-❌ Not handling network failures gracefully
-❌ Forgetting to verify TypeScript after changes
+❌ Not running git diff after theme application
+❌ Ignoring deleted NOWTS custom colors in diff
+❌ Ignoring deleted @layer base styles in diff
+❌ Proceeding without restoring lost data
 
 ## THEME PROTOCOLS:
 
