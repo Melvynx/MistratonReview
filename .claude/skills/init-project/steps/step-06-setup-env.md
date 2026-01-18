@@ -92,96 +92,124 @@ Parse all environment variables and their current values (empty or filled).
 
 **What:** PostgreSQL database connection string
 
-**DETECT OS FIRST:**
+**DETECT OS AND AUTO-INSTALL:**
+
 ```bash
 # Check OS
-uname -s
+OS=$(uname -s)
 ```
-
-**How to get (adapt based on OS):**
 
 ---
 
-**macOS:**
-```
-# English
-1. Download Postgres.app from https://postgresapp.com
-2. Install and start the app
-3. Create database: CREATE DATABASE {app_name_kebab};
-4. Use: postgresql://localhost:5432/{app_name_kebab}
+**macOS (auto-install with Homebrew):**
 
-# French
-1. Téléchargez Postgres.app depuis https://postgresapp.com
-2. Installez et démarrez l'app
-3. Créez une base: CREATE DATABASE {app_name_kebab};
-4. Utilisez: postgresql://localhost:5432/{app_name_kebab}
+```bash
+# Install Postgres.app via Homebrew
+brew install --cask postgres-app
+
+# Open the app (will auto-configure)
+open -a Postgres
+
+# Wait for app to start, then create database
+sleep 5
+createdb {app_name_kebab}
 ```
+
+**Connection string:** `postgresql://localhost:5432/{app_name_kebab}`
+
+**Note:** In Postgres.app preferences, enable "Start at Login" for auto-start.
 
 ---
 
 **Linux (Ubuntu/Debian):**
-```
-# English
-1. Install PostgreSQL:
-   sudo apt update && sudo apt install postgresql postgresql-contrib
-2. Start the service:
-   sudo systemctl start postgresql
-3. Create database:
-   sudo -u postgres createdb {app_name_kebab}
-4. Use: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
 
-# French
-1. Installez PostgreSQL:
-   sudo apt update && sudo apt install postgresql postgresql-contrib
-2. Démarrez le service:
-   sudo systemctl start postgresql
-3. Créez la base:
-   sudo -u postgres createdb {app_name_kebab}
-4. Utilisez: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
+```bash
+# Install PostgreSQL
+sudo apt update && sudo apt install -y postgresql postgresql-contrib
+
+# Start the service
+sudo systemctl start postgresql
+
+# Create database
+sudo -u postgres createdb {app_name_kebab}
+```
+
+**Connection string:** `postgresql://postgres:postgres@localhost:5432/{app_name_kebab}`
+
+**Ask user about auto-start:**
+
+Use AskUserQuestion:
+```yaml
+questions:
+  - header: "Auto-start"
+    question: "{language=en ? 'Enable PostgreSQL auto-start on boot?' : 'Activer le démarrage automatique de PostgreSQL au boot ?'}"
+    options:
+      - label: "{language=en ? 'Yes (Recommended)' : 'Oui (Recommandé)'}"
+        description: "{language=en ? 'PostgreSQL starts automatically' : 'PostgreSQL démarre automatiquement'}"
+      - label: "{language=en ? 'No' : 'Non'}"
+        description: "{language=en ? 'I will start it manually' : 'Je le démarrerai manuellement'}"
+    multiSelect: false
+```
+
+**If Yes:**
+```bash
+sudo systemctl enable postgresql
 ```
 
 ---
 
 **Windows WSL:**
-```
-# English
-1. In WSL terminal, install PostgreSQL:
-   sudo apt update && sudo apt install postgresql postgresql-contrib
-2. Start the service:
-   sudo service postgresql start
-3. Set password for postgres user:
-   sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-4. Create database:
-   sudo -u postgres createdb {app_name_kebab}
-5. Use: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
 
-# French
-1. Dans le terminal WSL, installez PostgreSQL:
-   sudo apt update && sudo apt install postgresql postgresql-contrib
-2. Démarrez le service:
-   sudo service postgresql start
-3. Définissez le mot de passe postgres:
-   sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-4. Créez la base:
-   sudo -u postgres createdb {app_name_kebab}
-5. Utilisez: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
+```bash
+# Install PostgreSQL
+sudo apt update && sudo apt install -y postgresql postgresql-contrib
+
+# Start the service
+sudo service postgresql start
+
+# Set password for postgres user
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+
+# Create database
+sudo -u postgres createdb {app_name_kebab}
+```
+
+**Connection string:** `postgresql://postgres:postgres@localhost:5432/{app_name_kebab}`
+
+**Ask user about auto-start:**
+
+Use AskUserQuestion:
+```yaml
+questions:
+  - header: "Auto-start"
+    question: "{language=en ? 'Add PostgreSQL auto-start to your shell?' : 'Ajouter le démarrage auto de PostgreSQL à votre shell ?'}"
+    options:
+      - label: "{language=en ? 'Yes (Recommended)' : 'Oui (Recommandé)'}"
+        description: "{language=en ? 'Adds to .bashrc/.zshrc' : 'Ajoute au .bashrc/.zshrc'}"
+      - label: "{language=en ? 'No' : 'Non'}"
+        description: "{language=en ? 'I will run: sudo service postgresql start' : 'Je lancerai: sudo service postgresql start'}"
+    multiSelect: false
+```
+
+**If Yes:**
+```bash
+# Detect shell config file
+if [ -f ~/.zshrc ]; then
+  echo "sudo service postgresql start > /dev/null 2>&1" >> ~/.zshrc
+elif [ -f ~/.bashrc ]; then
+  echo "sudo service postgresql start > /dev/null 2>&1" >> ~/.bashrc
+fi
 ```
 
 ---
 
 **FOR PRODUCTION (all OS):**
+
 ```
-# English
 1. Go to https://neon.tech (recommended)
 2. Create a new project
 3. Copy the connection string (pooled for DATABASE_URL)
 4. Copy the direct connection for DATABASE_URL_UNPOOLED
-
-# French
-1. Allez sur https://neon.tech (recommandé)
-2. Créez un nouveau projet
-3. Copiez la chaîne de connexion (pooled pour DATABASE_URL)
-4. Copiez la connexion directe pour DATABASE_URL_UNPOOLED
 ```
 
 ---
