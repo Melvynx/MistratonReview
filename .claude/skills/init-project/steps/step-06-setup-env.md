@@ -110,12 +110,22 @@ brew install --cask postgres-app
 # Open the app (will auto-configure)
 open -a Postgres
 
-# Wait for app to start, then create database
+# Wait for app to start
 sleep 5
+
+# Get current username (Postgres.app uses system username)
+USERNAME=$(whoami)
+
+# Create database
 createdb {app_name_kebab}
+
+# Verify connection works
+psql -d {app_name_kebab} -c "SELECT 1;" > /dev/null 2>&1 && echo "✓ Database connection OK" || echo "✗ Connection failed"
 ```
 
-**Connection string:** `postgresql://localhost:5432/{app_name_kebab}`
+**Connection string:** `postgresql://{USERNAME}:@localhost:5432/{app_name_kebab}`
+
+Example: `postgresql://melvynx:@localhost:5432/my-app`
 
 **Note:** In Postgres.app preferences, enable "Start at Login" for auto-start.
 
@@ -130,8 +140,14 @@ sudo apt update && sudo apt install -y postgresql postgresql-contrib
 # Start the service
 sudo systemctl start postgresql
 
+# Set password for postgres user
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+
 # Create database
 sudo -u postgres createdb {app_name_kebab}
+
+# Verify connection works
+PGPASSWORD=postgres psql -U postgres -d {app_name_kebab} -c "SELECT 1;" > /dev/null 2>&1 && echo "✓ Database connection OK" || echo "✗ Connection failed"
 ```
 
 **Connection string:** `postgresql://postgres:postgres@localhost:5432/{app_name_kebab}`
@@ -172,6 +188,9 @@ sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 
 # Create database
 sudo -u postgres createdb {app_name_kebab}
+
+# Verify connection works
+PGPASSWORD=postgres psql -U postgres -d {app_name_kebab} -c "SELECT 1;" > /dev/null 2>&1 && echo "✓ Database connection OK" || echo "✗ Connection failed"
 ```
 
 **Connection string:** `postgresql://postgres:postgres@localhost:5432/{app_name_kebab}`
