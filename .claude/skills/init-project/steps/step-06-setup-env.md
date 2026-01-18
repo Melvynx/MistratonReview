@@ -1,0 +1,495 @@
+---
+name: step-06-setup-env
+description: Setup environment variables by copying template and filling values
+prev_step: steps/step-05-update-landing.md
+next_step: steps/step-07-finalize.md
+---
+
+# Step 6: Setup Environment Variables
+
+## MANDATORY EXECUTION RULES (READ FIRST):
+
+- 🛑 NEVER commit .env file to git
+- ✅ ALWAYS explain how to get each env variable
+- 📋 YOU ARE an environment setup assistant
+- 💬 FOCUS on one env variable at a time
+- 🚫 FORBIDDEN to store sensitive values in logs or output
+
+## EXECUTION PROTOCOLS:
+
+- 🎯 Copy .env-template to .env first
+- 💾 Ask for each env var one by one
+- 📖 Explain how to obtain each value
+- 🚫 FORBIDDEN to skip the "how to get" explanation
+
+## CONTEXT BOUNDARIES:
+
+<available_state>
+From previous steps:
+
+| Variable | Description |
+|----------|-------------|
+| `{app_name}` | Application name |
+| `{language}` | User's preferred language |
+</available_state>
+
+## YOUR TASK:
+
+Copy .env-template to .env, then guide user through setting up each environment variable with clear instructions on how to obtain each value.
+
+---
+
+## EXECUTION SEQUENCE:
+
+### 1. Check if .env Already Exists
+
+```bash
+ls -la .env 2>/dev/null
+```
+
+**If .env exists:**
+
+Use AskUserQuestion:
+```yaml
+questions:
+  - header: "Env"
+    question: "{language=en ? '.env file already exists. What would you like to do?' : 'Le fichier .env existe déjà. Que voulez-vous faire ?'}"
+    options:
+      - label: "{language=en ? 'Keep existing and fill missing' : 'Garder l\\'existant et remplir les manquants'}"
+        description: "{language=en ? 'Only ask for empty variables' : 'Demander uniquement les variables vides'}"
+      - label: "{language=en ? 'Start fresh' : 'Recommencer à zéro'}"
+        description: "{language=en ? 'Overwrite with template' : 'Écraser avec le template'}"
+      - label: "{language=en ? 'Skip env setup' : 'Passer la config env'}"
+        description: "{language=en ? 'I will configure later' : 'Je configurerai plus tard'}"
+    multiSelect: false
+```
+
+**If .env doesn't exist:**
+- Copy template: `cp .env-template .env`
+
+### 2. Read Current .env
+
+```bash
+Read: .env
+```
+
+Parse all environment variables and their current values (empty or filled).
+
+### 3. Environment Variables Guide
+
+**Ask for each variable one by one. For each:**
+1. Show variable name
+2. Explain what it's for
+3. Explain HOW TO GET IT
+4. Ask user to paste value or type "skip"
+5. Update .env with the value
+
+---
+
+## ENV VARIABLES REFERENCE
+
+### DATABASE_URL & DATABASE_URL_UNPOOLED
+
+**What:** PostgreSQL database connection string
+
+**How to get:**
+```
+# English
+1. Go to https://neon.tech (recommended) or https://supabase.com
+2. Create a new project
+3. Go to Dashboard → Connection Details
+4. Copy the connection string (pooled for DATABASE_URL)
+5. Copy the direct connection string for DATABASE_URL_UNPOOLED
+
+Format: postgresql://user:password@host:port/database?sslmode=require
+
+# French
+1. Allez sur https://neon.tech (recommandé) ou https://supabase.com
+2. Créez un nouveau projet
+3. Allez dans Dashboard → Connection Details
+4. Copiez la chaîne de connexion (pooled pour DATABASE_URL)
+5. Copiez la connexion directe pour DATABASE_URL_UNPOOLED
+
+Format: postgresql://user:password@host:port/database?sslmode=require
+```
+
+---
+
+### REDIS_URL
+
+**What:** Redis cache connection for performance
+
+**How to get:**
+```
+# English
+Option 1 - Upstash (recommended, free tier):
+1. Go to https://upstash.com
+2. Create a Redis database
+3. Copy the Redis URL from the dashboard
+
+Option 2 - Railway ($5/mo):
+1. Go to https://railway.app
+2. Add a Redis service
+3. Copy the connection URL
+
+Option 3 - Local development:
+Use: redis://localhost:6379 (requires Docker or local Redis)
+
+# French
+Option 1 - Upstash (recommandé, gratuit):
+1. Allez sur https://upstash.com
+2. Créez une base Redis
+3. Copiez l'URL Redis depuis le dashboard
+
+Option 2 - Railway (5$/mois):
+1. Allez sur https://railway.app
+2. Ajoutez un service Redis
+3. Copiez l'URL de connexion
+
+Option 3 - Développement local:
+Utilisez: redis://localhost:6379 (nécessite Docker ou Redis local)
+```
+
+---
+
+### GITHUB_CLIENT_ID & GITHUB_CLIENT_SECRET
+
+**What:** GitHub OAuth for social login
+
+**How to get:**
+```
+# English
+1. Go to https://github.com/settings/developers
+2. Click "New OAuth App"
+3. Fill in:
+   - Application name: {app_name}
+   - Homepage URL: http://localhost:3000 (dev) or your production URL
+   - Callback URL: http://localhost:3000/api/auth/callback/github
+4. Click "Register application"
+5. Copy Client ID
+6. Generate and copy Client Secret
+
+# French
+1. Allez sur https://github.com/settings/developers
+2. Cliquez "New OAuth App"
+3. Remplissez:
+   - Application name: {app_name}
+   - Homepage URL: http://localhost:3000 (dev) ou votre URL de prod
+   - Callback URL: http://localhost:3000/api/auth/callback/github
+4. Cliquez "Register application"
+5. Copiez le Client ID
+6. Générez et copiez le Client Secret
+```
+
+---
+
+### BETTER_AUTH_SECRET
+
+**What:** Secret key for authentication encryption
+
+**How to get:**
+```
+# English
+Generate a random secret with:
+openssl rand -base64 32
+
+Or use: https://generate-secret.vercel.app/32
+
+# French
+Générez un secret aléatoire avec:
+openssl rand -base64 32
+
+Ou utilisez: https://generate-secret.vercel.app/32
+```
+
+**Auto-generate option:** Offer to run `openssl rand -base64 32` automatically.
+
+---
+
+### RESEND_API_KEY
+
+**What:** API key for sending transactional emails
+
+**How to get:**
+```
+# English
+1. Go to https://resend.com
+2. Sign up / Log in
+3. Go to API Keys → Create API Key
+4. Copy the key (starts with re_)
+
+# French
+1. Allez sur https://resend.com
+2. Inscrivez-vous / Connectez-vous
+3. Allez dans API Keys → Create API Key
+4. Copiez la clé (commence par re_)
+```
+
+---
+
+### RESEND_AUDIENCE_ID
+
+**What:** Audience ID for newsletter/email list
+
+**How to get:**
+```
+# English
+1. In Resend dashboard, go to Audiences
+2. Create an audience (e.g., "{app_name} Newsletter")
+3. Copy the Audience ID
+
+# French
+1. Dans le dashboard Resend, allez dans Audiences
+2. Créez une audience (ex: "{app_name} Newsletter")
+3. Copiez l'Audience ID
+```
+
+---
+
+### EMAIL_FROM & NEXT_PUBLIC_EMAIL_CONTACT
+
+**What:** Email addresses for sending and contact
+
+**How to get:**
+```
+# English
+Use your domain email, e.g.:
+- EMAIL_FROM: "{app_name} <contact@yourdomain.com>"
+- NEXT_PUBLIC_EMAIL_CONTACT: "contact@yourdomain.com"
+
+Note: You must verify your domain in Resend first.
+
+# French
+Utilisez votre email de domaine, ex:
+- EMAIL_FROM: "{app_name} <contact@votredomaine.com>"
+- NEXT_PUBLIC_EMAIL_CONTACT: "contact@votredomaine.com"
+
+Note: Vous devez d'abord vérifier votre domaine dans Resend.
+```
+
+---
+
+### STRIPE_SECRET_KEY & NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+**What:** Stripe API keys for payments
+
+**How to get:**
+```
+# English
+1. Go to https://dashboard.stripe.com/apikeys
+2. Copy "Publishable key" → NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+3. Copy "Secret key" → STRIPE_SECRET_KEY
+
+Use TEST keys for development (start with pk_test_ and sk_test_)
+
+# French
+1. Allez sur https://dashboard.stripe.com/apikeys
+2. Copiez "Publishable key" → NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+3. Copiez "Secret key" → STRIPE_SECRET_KEY
+
+Utilisez les clés TEST pour le dev (commencent par pk_test_ et sk_test_)
+```
+
+---
+
+### STRIPE_WEBHOOK_SECRET
+
+**What:** Secret for verifying Stripe webhook events
+
+**How to get:**
+```
+# English
+For local development:
+1. Install Stripe CLI: brew install stripe/stripe-cli/stripe
+2. Run: stripe listen --forward-to localhost:3000/api/webhooks/stripe
+3. Copy the webhook signing secret (starts with whsec_)
+
+For production:
+1. Go to Stripe Dashboard → Developers → Webhooks
+2. Add endpoint: https://yourdomain.com/api/webhooks/stripe
+3. Copy the signing secret
+
+# French
+Pour le développement local:
+1. Installez Stripe CLI: brew install stripe/stripe-cli/stripe
+2. Lancez: stripe listen --forward-to localhost:3000/api/webhooks/stripe
+3. Copiez le webhook signing secret (commence par whsec_)
+
+Pour la production:
+1. Allez dans Stripe Dashboard → Developers → Webhooks
+2. Ajoutez endpoint: https://votredomaine.com/api/webhooks/stripe
+3. Copiez le signing secret
+```
+
+---
+
+### STRIPE_*_PLAN_ID (Pro, Pro Yearly, Ultra, Ultra Yearly)
+
+**What:** Stripe Price IDs for subscription plans
+
+**How to get:**
+```
+# English
+1. Go to Stripe Dashboard → Products
+2. Create your products (Pro, Ultra)
+3. Add prices (monthly and yearly)
+4. Copy each Price ID (starts with price_)
+
+Skip these for now if you haven't set up billing yet.
+
+# French
+1. Allez dans Stripe Dashboard → Products
+2. Créez vos produits (Pro, Ultra)
+3. Ajoutez les prix (mensuel et annuel)
+4. Copiez chaque Price ID (commence par price_)
+
+Passez ces variables si vous n'avez pas encore configuré la facturation.
+```
+
+---
+
+### NEXT_PUBLIC_POSTHOG_KEY & NEXT_PUBLIC_POSTHOG_HOST
+
+**What:** PostHog analytics (optional)
+
+**How to get:**
+```
+# English
+1. Go to https://posthog.com
+2. Create a project
+3. Go to Settings → Project API Key
+4. Copy the key and host URL
+
+Skip if you don't need analytics yet.
+
+# French
+1. Allez sur https://posthog.com
+2. Créez un projet
+3. Allez dans Settings → Project API Key
+4. Copiez la clé et l'URL host
+
+Passez si vous n'avez pas encore besoin d'analytics.
+```
+
+---
+
+### UPLOADTHING_TOKEN
+
+**What:** Token for file uploads (optional)
+
+**How to get:**
+```
+# English
+1. Go to https://uploadthing.com
+2. Create a project
+3. Copy your API token
+
+Skip if you don't need file uploads.
+
+# French
+1. Allez sur https://uploadthing.com
+2. Créez un projet
+3. Copiez votre token API
+
+Passez si vous n'avez pas besoin d'upload de fichiers.
+```
+
+---
+
+## ASKING FLOW
+
+For each variable, follow this pattern:
+
+**1. Show the variable:**
+```
+# English
+Setting up: DATABASE_URL
+
+# French
+Configuration de: DATABASE_URL
+```
+
+**2. Explain what and how:**
+```
+{Show the "What" and "How to get" from reference above}
+```
+
+**3. Ask for value:**
+```
+# English
+Paste your DATABASE_URL value, or type "skip" to configure later:
+
+# French
+Collez votre valeur DATABASE_URL, ou tapez "skip" pour configurer plus tard:
+```
+
+**4. Update .env:**
+- If value provided: Update the line in .env
+- If "skip": Leave empty, continue to next
+
+**5. Confirm and continue:**
+```
+# English
+✓ DATABASE_URL configured
+Next: DATABASE_URL_UNPOOLED
+
+# French
+✓ DATABASE_URL configuré
+Suivant: DATABASE_URL_UNPOOLED
+```
+
+---
+
+## PRIORITY ORDER
+
+Ask in this order (most critical first):
+
+1. **DATABASE_URL** & **DATABASE_URL_UNPOOLED** (required)
+2. **REDIS_URL** (required for caching)
+3. **BETTER_AUTH_SECRET** (required, offer auto-generate)
+4. **GITHUB_CLIENT_ID** & **GITHUB_CLIENT_SECRET** (for OAuth)
+5. **RESEND_API_KEY** (for emails)
+6. **EMAIL_FROM** & **NEXT_PUBLIC_EMAIL_CONTACT**
+7. **STRIPE_SECRET_KEY** & **NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY**
+8. **STRIPE_WEBHOOK_SECRET**
+9. STRIPE_*_PLAN_ID (can skip)
+10. **RESEND_AUDIENCE_ID** (can skip)
+11. **NEXT_PUBLIC_POSTHOG_*** (optional)
+12. **UPLOADTHING_TOKEN** (optional)
+
+---
+
+## SUCCESS METRICS:
+
+✅ .env file created from template
+✅ Each variable explained with "how to get"
+✅ User can skip any variable
+✅ .env updated with provided values
+✅ Summary of configured vs skipped variables
+✅ .env NOT committed to git
+
+## FAILURE MODES:
+
+❌ Not explaining how to get each variable
+❌ Asking for all variables at once
+❌ Storing sensitive values in visible output
+❌ Committing .env to git
+❌ Not offering "skip" option
+
+## ENV PROTOCOLS:
+
+- Always explain before asking
+- Group related variables (e.g., both Stripe keys together)
+- Offer auto-generation for secrets (BETTER_AUTH_SECRET)
+- Remind user to never commit .env
+- Suggest test/dev values when appropriate
+
+---
+
+## NEXT STEP:
+
+After env setup, load `./step-07-finalize.md`
+
+<critical>
+Remember: NEVER log or display sensitive values in full. Always explain HOW TO GET each value!
+</critical>

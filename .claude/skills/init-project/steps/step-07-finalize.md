@@ -1,11 +1,11 @@
 ---
-name: step-06-finalize
+name: step-07-finalize
 description: Final validation and summary of all changes
-prev_step: steps/step-05-update-landing.md
+prev_step: steps/step-06-setup-env.md
 next_step: null
 ---
 
-# Step 6: Finalize
+# Step 7: Finalize
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -38,6 +38,8 @@ From all previous steps:
 | `{language}` | User's preferred language |
 | `{landing_agent_id}` | Background agent ID (if launched) |
 | `{repo_url}` | New GitHub repository URL (if created) |
+| `{env_configured}` | List of configured env variables |
+| `{env_skipped}` | List of skipped env variables |
 </available_state>
 
 ## YOUR TASK:
@@ -114,6 +116,11 @@ pnpm lint:ci
 - Background agent {status}: updating all copy
 - Hero, features, testimonials, FAQ, CTAs
 
+### Environment (.env)
+- Configured: {len(env_configured)} variables
+- Skipped: {len(env_skipped)} variables (configure later)
+{if env_skipped: '- Run `/init-project` again to complete env setup'}
+
 ## Validation Results
 
 | Check | Status |
@@ -130,9 +137,9 @@ pnpm lint:ci
    - Logo and favicon in `/public/`
    - Email templates in `/emails/`
    - Legal pages (privacy, terms)
-4. **Set up environment:**
-   - Copy `.env.example` to `.env`
-   - Configure database, auth, and Stripe
+4. **Complete skipped env vars:** (if any were skipped)
+   - Run `pnpm dev` to see which are needed
+   - Update `.env` with missing values
 5. **Deploy:**
    - Push to GitHub
    - Deploy to Vercel
@@ -141,6 +148,7 @@ pnpm lint:ci
 
 - `CLAUDE.md`
 - `src/site-config.ts`
+- `.env` (from template)
 {if theme_applied: '- `app/globals.css`'}
 {if landing_updated: '- `app/page.tsx`\n- `src/features/landing/*`'}
 
@@ -181,6 +189,11 @@ Your {app_name} project is ready for development!
 - Agent en arrière-plan {status} : mise à jour de tout le contenu
 - Hero, features, témoignages, FAQ, CTAs
 
+### Environnement (.env)
+- Configuré : {len(env_configured)} variables
+- Passé : {len(env_skipped)} variables (à configurer plus tard)
+{if env_skipped: '- Relancez `/init-project` pour compléter la config env'}
+
 ## Résultats de Validation
 
 | Vérification | Statut |
@@ -197,9 +210,9 @@ Your {app_name} project is ready for development!
    - Logo et favicon dans `/public/`
    - Templates email dans `/emails/`
    - Pages légales (privacy, terms)
-4. **Configurer l'environnement :**
-   - Copier `.env.example` vers `.env`
-   - Configurer database, auth, et Stripe
+4. **Compléter les vars env passées :** (si certaines ont été passées)
+   - Lancez `pnpm dev` pour voir lesquelles sont nécessaires
+   - Mettez à jour `.env` avec les valeurs manquantes
 5. **Déployer :**
    - Push sur GitHub
    - Déployer sur Vercel
@@ -208,6 +221,7 @@ Your {app_name} project is ready for development!
 
 - `CLAUDE.md`
 - `src/site-config.ts`
+- `.env` (depuis le template)
 {if theme_applied: '- `app/globals.css`'}
 {if landing_updated: '- `app/page.tsx`\n- `src/features/landing/*`'}
 

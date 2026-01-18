@@ -2,7 +2,7 @@
 name: step-05-update-landing
 description: Update landing page copy using a background agent
 prev_step: steps/step-04-update-theme.md
-next_step: steps/step-06-finalize.md
+next_step: steps/step-06-setup-env.md
 ---
 
 # Step 5: Update Landing Page
@@ -245,7 +245,7 @@ app/page.tsx
 
 ## NEXT STEP:
 
-Immediately after launching background agent, load `./step-06-finalize.md`
+Immediately after launching background agent, load `./step-06-setup-env.md`
 
 <critical>
 Remember: Launch agent and MOVE ON - do not wait for completion!

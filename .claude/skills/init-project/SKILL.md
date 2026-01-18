@@ -54,7 +54,8 @@ Load `steps/step-00-init.md`
 | 03 | `step-03-update-config.md` | Update site-config.ts and other config files |
 | 04 | `step-04-update-theme.md` | Apply theme from tinte.dev |
 | 05 | `step-05-update-landing.md` | Update landing page copy (background agent) |
-| 06 | `step-06-finalize.md` | Final validation and summary |
+| 06 | `step-06-setup-env.md` | Setup .env with guided variable configuration |
+| 07 | `step-07-finalize.md` | Final validation and summary |
 
 </step_files>
 
@@ -73,11 +74,12 @@ Load `steps/step-00-init.md`
 └──────────────┘    └──────────────┘    │ (background) │
                                         └──────────────┘
                                                │
-                                               ▼
-                                        ┌──────────────┐
-                                        │  Step 06     │
-                                        │  Finalize    │
-                                        └──────────────┘
+       ┌───────────────────────────────────────┘
+       ▼
+┌──────────────┐    ┌──────────────┐
+│  Step 06     │───►│  Step 07     │
+│  Setup .env  │    │  Finalize    │
+└──────────────┘    └──────────────┘
 ```
 </workflow_diagram>
 
@@ -91,4 +93,5 @@ Load `steps/step-00-init.md`
 | `app/globals.css` | Theme colors from tinte.dev |
 | `app/page.tsx` | Landing page structure (if needed) |
 | `src/features/landing/*` | Landing page components copy |
+| `.env` | Environment variables (created from .env-template) |
 </important_files>
