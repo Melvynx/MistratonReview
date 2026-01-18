@@ -13,7 +13,7 @@ import { InlineTooltip } from "@/components/ui/tooltip";
 import { LoadingButton } from "@/features/form/submit-button";
 import { Form, useForm } from "@/features/form/tanstack-form";
 import AvatarUpload from "@/features/images/avatar-upload";
-import { uploadImageAction } from "@/features/images/upload-image.action";
+import { uploadUserImageAction } from "@/features/images/upload-image.action";
 import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
@@ -58,7 +58,7 @@ export const EditProfileCardForm = ({
       const formData = new FormData();
       formData.set("files", file);
 
-      return resolveActionResult(uploadImageAction({ formData }));
+      return resolveActionResult(uploadUserImageAction({ formData }));
     },
     onSuccess: (data) => {
       form.setFieldValue("image", data);

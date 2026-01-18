@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Form, useForm } from "@/features/form/tanstack-form";
 import AvatarUpload from "@/features/images/avatar-upload";
-import { uploadImageAction } from "@/features/images/upload-image.action";
+import { uploadOrgImageAction } from "@/features/images/upload-image.action";
 import { resolveActionResult } from "@/lib/actions/actions-utils";
 import { authClient } from "@/lib/auth-client";
 import { unwrapSafePromise } from "@/lib/promises";
@@ -57,7 +57,7 @@ export const OrgDetailsForm = ({ defaultValues }: ProductFormProps) => {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.set("files", file);
-      return resolveActionResult(uploadImageAction({ formData }));
+      return resolveActionResult(uploadOrgImageAction({ formData }));
     },
     onSuccess: (data) => {
       form.setFieldValue("logo", data);

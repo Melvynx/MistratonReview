@@ -4,9 +4,10 @@ import type { UploadFileAdapter } from "./upload-file";
 export const fileAdapter: UploadFileAdapter = {
   uploadFile: async (params) => {
     try {
-      const file = params.file;
+      const { file, path } = params;
+      const filePath = path ? `${path}/${file.name}` : file.name;
 
-      const blob = await put(file.name, file, {
+      const blob = await put(filePath, file, {
         access: "public",
       });
 
@@ -22,7 +23,11 @@ export const fileAdapter: UploadFileAdapter = {
   uploadFiles: async (params) => {
     const promises = params.map(async (param) => {
       try {
-        const blob = await put(param.file.name, param.file, {
+        const filePath = param.path
+          ? `${param.path}/${param.file.name}`
+          : param.file.name;
+
+        const blob = await put(filePath, param.file, {
           access: "public",
         });
 
