@@ -373,25 +373,154 @@ Passez si vous n'avez pas encore besoin d'analytics.
 
 ---
 
-### UPLOADTHING_TOKEN
+### FILE UPLOAD PROVIDER
 
-**What:** Token for file uploads (optional)
+**What:** Storage provider for file uploads (images, documents)
+
+**CRITICAL: Ask user which provider they want to use BEFORE asking for env vars.**
+
+Use AskUserQuestion:
+```yaml
+questions:
+  - header: "Storage"
+    question: "{language=en ? 'Which file upload provider do you want to use?' : 'Quel fournisseur de stockage voulez-vous utiliser ?'}"
+    options:
+      - label: "{language=en ? 'Vercel Blob (Recommended)' : 'Vercel Blob (Recommandé)'}"
+        description: "{language=en ? 'Simple, auto-configured on Vercel' : 'Simple, auto-configuré sur Vercel'}"
+      - label: "Cloudflare R2 / AWS S3"
+        description: "{language=en ? 'More control, works anywhere' : 'Plus de contrôle, fonctionne partout'}"
+      - label: "UploadThing"
+        description: "{language=en ? 'Developer-friendly, generous free tier' : 'Dev-friendly, free tier généreux'}"
+      - label: "{language=en ? 'Skip for now' : 'Passer pour l\\'instant'}"
+        description: "{language=en ? 'I will configure later' : 'Je configurerai plus tard'}"
+    multiSelect: false
+```
+
+**Store response as `{file_upload_provider}`**
+
+---
+
+#### If Vercel Blob selected:
+
+**Env var:** `BLOB_READ_WRITE_TOKEN`
+
+**How to get:**
+```
+# English
+On Vercel (production):
+- Automatically configured when you connect Vercel Blob storage
+- Go to Vercel Dashboard > Storage > Create Database > Blob
+- Connect to your project - done!
+
+For local development:
+1. Go to Vercel Dashboard > Storage > Blob > Tokens
+2. Create a token with read/write access
+3. Copy the token (starts with vercel_blob_)
+
+# French
+Sur Vercel (production):
+- Automatiquement configuré quand vous connectez Vercel Blob
+- Allez dans Vercel Dashboard > Storage > Create Database > Blob
+- Connectez à votre projet - c'est fait !
+
+Pour le développement local:
+1. Allez dans Vercel Dashboard > Storage > Blob > Tokens
+2. Créez un token avec accès read/write
+3. Copiez le token (commence par vercel_blob_)
+```
+
+**The adapter is already configured at `src/lib/files/vercel-blob-adapter.ts`**
+
+---
+
+#### If Cloudflare R2 / AWS S3 selected:
+
+**1. Install dependencies:**
+```bash
+pnpm add @aws-sdk/client-s3 mime-types
+pnpm add -D @types/mime-types
+```
+
+**2. Ask for these env vars:**
+
+| Variable | How to get |
+|----------|------------|
+| `AWS_ENDPOINT` | Cloudflare: `https://{account-id}.r2.cloudflarestorage.com` |
+| `AWS_ACCESS_KEY_ID` | From R2/S3 API tokens |
+| `AWS_SECRET_ACCESS_KEY` | From R2/S3 API tokens |
+| `AWS_S3_BUCKET_NAME` | Your bucket name |
+| `R2_URL` | Public URL for your bucket |
+
+**3. Create adapter file:**
+
+Create `src/lib/files/r2-adapter.ts` with the code from docs/file-adapters.
+
+**4. Update import in `src/features/images/upload-image.action.ts`:**
+```typescript
+import { fileAdapter } from "@/lib/files/r2-adapter";
+```
+
+---
+
+#### If UploadThing selected:
+
+**1. Install dependency:**
+```bash
+pnpm add uploadthing
+```
+
+**2. Ask for env var:** `UPLOADTHING_TOKEN`
 
 **How to get:**
 ```
 # English
 1. Go to https://uploadthing.com
 2. Create a project
-3. Copy your API token
-
-Skip if you don't need file uploads.
+3. Go to API Keys
+4. Copy your token
 
 # French
 1. Allez sur https://uploadthing.com
 2. Créez un projet
-3. Copiez votre token API
+3. Allez dans API Keys
+4. Copiez votre token
+```
 
-Passez si vous n'avez pas besoin d'upload de fichiers.
+**3. Create adapter file:**
+
+Create `src/lib/files/uploadthing-adapter.ts`:
+```typescript
+import { UTApi } from "uploadthing/server";
+import type { UploadFileAdapter } from "./upload-file";
+
+export const utapi = new UTApi({});
+
+export const fileAdapter: UploadFileAdapter = {
+  uploadFile: async (params) => {
+    const response = await utapi.uploadFiles([params.file]);
+
+    if (response[0].error) {
+      return { error: new Error(response[0].error.message), data: null };
+    }
+
+    return { error: null, data: { url: response[0].data.ufsUrl } };
+  },
+  uploadFiles: async (params) => {
+    const response = await utapi.uploadFiles(params.map((param) => param.file));
+
+    return response.map((res) => {
+      if (res.error) {
+        return { error: new Error(res.error.message), data: null };
+      }
+      return { error: null, data: { url: res.data.ufsUrl } };
+    });
+  },
+};
+```
+
+**4. Update import in `src/features/images/upload-image.action.ts`:**
+```typescript
+import { fileAdapter } from "@/lib/files/uploadthing-adapter";
 ```
 
 ---
@@ -455,7 +584,7 @@ Ask in this order (most critical first):
 9. STRIPE_*_PLAN_ID (can skip)
 10. **RESEND_AUDIENCE_ID** (can skip)
 11. **NEXT_PUBLIC_POSTHOG_*** (optional)
-12. **UPLOADTHING_TOKEN** (optional)
+12. **FILE UPLOAD PROVIDER** (ask which provider, then configure accordingly)
 
 ---
 
@@ -465,6 +594,8 @@ Ask in this order (most critical first):
 ✅ Each variable explained with "how to get"
 ✅ User can skip any variable
 ✅ .env updated with provided values
+✅ File upload provider chosen and configured
+✅ Adapter file created/updated if needed
 ✅ Summary of configured vs skipped variables
 ✅ .env NOT committed to git
 
