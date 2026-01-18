@@ -92,39 +92,96 @@ Parse all environment variables and their current values (empty or filled).
 
 **What:** PostgreSQL database connection string
 
-**How to get:**
+**DETECT OS FIRST:**
+```bash
+# Check OS
+uname -s
+```
+
+**How to get (adapt based on OS):**
+
+---
+
+**macOS:**
 ```
 # English
-FOR LOCAL DEVELOPMENT:
 1. Download Postgres.app from https://postgresapp.com
 2. Install and start the app
-3. Create a new database: CREATE DATABASE {app_name_kebab};
+3. Create database: CREATE DATABASE {app_name_kebab};
 4. Use: postgresql://localhost:5432/{app_name_kebab}
 
-FOR PRODUCTION:
-1. Go to https://neon.tech (recommended) or https://supabase.com
-2. Create a new project
-3. Go to Dashboard → Connection Details
-4. Copy the connection string (pooled for DATABASE_URL)
-5. Copy the direct connection string for DATABASE_URL_UNPOOLED
-
-Format: postgresql://user:password@host:port/database?sslmode=require
-
 # French
-POUR LE DÉVELOPPEMENT LOCAL:
 1. Téléchargez Postgres.app depuis https://postgresapp.com
 2. Installez et démarrez l'app
 3. Créez une base: CREATE DATABASE {app_name_kebab};
 4. Utilisez: postgresql://localhost:5432/{app_name_kebab}
+```
 
-POUR LA PRODUCTION:
-1. Allez sur https://neon.tech (recommandé) ou https://supabase.com
+---
+
+**Linux (Ubuntu/Debian):**
+```
+# English
+1. Install PostgreSQL:
+   sudo apt update && sudo apt install postgresql postgresql-contrib
+2. Start the service:
+   sudo systemctl start postgresql
+3. Create database:
+   sudo -u postgres createdb {app_name_kebab}
+4. Use: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
+
+# French
+1. Installez PostgreSQL:
+   sudo apt update && sudo apt install postgresql postgresql-contrib
+2. Démarrez le service:
+   sudo systemctl start postgresql
+3. Créez la base:
+   sudo -u postgres createdb {app_name_kebab}
+4. Utilisez: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
+```
+
+---
+
+**Windows WSL:**
+```
+# English
+1. In WSL terminal, install PostgreSQL:
+   sudo apt update && sudo apt install postgresql postgresql-contrib
+2. Start the service:
+   sudo service postgresql start
+3. Set password for postgres user:
+   sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+4. Create database:
+   sudo -u postgres createdb {app_name_kebab}
+5. Use: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
+
+# French
+1. Dans le terminal WSL, installez PostgreSQL:
+   sudo apt update && sudo apt install postgresql postgresql-contrib
+2. Démarrez le service:
+   sudo service postgresql start
+3. Définissez le mot de passe postgres:
+   sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+4. Créez la base:
+   sudo -u postgres createdb {app_name_kebab}
+5. Utilisez: postgresql://postgres:postgres@localhost:5432/{app_name_kebab}
+```
+
+---
+
+**FOR PRODUCTION (all OS):**
+```
+# English
+1. Go to https://neon.tech (recommended)
+2. Create a new project
+3. Copy the connection string (pooled for DATABASE_URL)
+4. Copy the direct connection for DATABASE_URL_UNPOOLED
+
+# French
+1. Allez sur https://neon.tech (recommandé)
 2. Créez un nouveau projet
-3. Allez dans Dashboard → Connection Details
-4. Copiez la chaîne de connexion (pooled pour DATABASE_URL)
-5. Copiez la connexion directe pour DATABASE_URL_UNPOOLED
-
-Format: postgresql://user:password@host:port/database?sslmode=require
+3. Copiez la chaîne de connexion (pooled pour DATABASE_URL)
+4. Copiez la connexion directe pour DATABASE_URL_UNPOOLED
 ```
 
 ---
