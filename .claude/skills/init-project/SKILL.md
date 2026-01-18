@@ -38,6 +38,7 @@ Use this workflow when:
 | `{archi_content}` | string | Architecture content if provided |
 | `{theme_command}` | string | tinte.dev CLI command for theme |
 | `{language}` | string | Detected user language (en/fr) |
+| `{repo_url}` | string | New GitHub repository URL (if created) |
 </state_variables>
 
 <entry_point>

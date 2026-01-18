@@ -37,6 +37,7 @@ From all previous steps:
 | `{theme_command}` | Theme applied (or null) |
 | `{language}` | User's preferred language |
 | `{landing_agent_id}` | Background agent ID (if launched) |
+| `{repo_url}` | New GitHub repository URL (if created) |
 </available_state>
 
 ## YOUR TASK:
@@ -89,6 +90,10 @@ pnpm lint:ci
 # {app_name} - Project Initialization Complete
 
 ## What Was Updated
+
+### GitHub Repository
+{if repo_url: '- New repository created: ' + repo_url : '- Using existing repository'}
+{if repo_url: '- Boilerplate remote (melvynx/now.ts) removed'}
 
 ### CLAUDE.md
 - Project description added
@@ -152,6 +157,10 @@ Your {app_name} project is ready for development!
 # {app_name} - Initialisation du Projet Terminée
 
 ## Ce Qui a Été Mis à Jour
+
+### Dépôt GitHub
+{if repo_url: '- Nouveau dépôt créé : ' + repo_url : '- Dépôt existant conservé'}
+{if repo_url: '- Remote boilerplate (melvynx/now.ts) supprimé'}
 
 ### CLAUDE.md
 - Description du projet ajoutée

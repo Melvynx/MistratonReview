@@ -79,6 +79,79 @@ Exemple : "Une plateforme SaaS qui aide les freelances à suivre leur temps et f
 
 ---
 
+### Step 2.5: Git Repository Setup
+
+**CRITICAL: Check and setup git remote immediately after getting app name and purpose.**
+
+**1. Check current git remote:**
+
+```bash
+git remote -v
+```
+
+**2. Detect if still using boilerplate repo:**
+
+Look for `melvynx/now.ts` or `Melvynx/now.ts` in the output.
+
+**If boilerplate repo detected:**
+
+```
+# English
+I noticed this project is still linked to the NowTS boilerplate repository (melvynx/now.ts).
+Let me set up a fresh GitHub repository for {app_name}.
+
+# French
+J'ai remarqué que ce projet est encore lié au repo boilerplate NowTS (melvynx/now.ts).
+Je vais créer un nouveau dépôt GitHub pour {app_name}.
+```
+
+**3. Create new repository:**
+
+```bash
+# Remove old remote
+git remote remove origin
+
+# Create new repo with gh CLI
+# Use kebab-case app name and app_purpose as description
+gh repo create {app_name_kebab} --private --description "{app_purpose}" --source=. --push
+```
+
+**Example:**
+```bash
+git remote remove origin
+gh repo create my-awesome-app --private --description "A SaaS platform for freelancers" --source=. --push
+```
+
+**4. Verify new remote:**
+
+```bash
+git remote -v
+```
+
+**5. Report to user:**
+
+```
+# English
+New GitHub repository created: https://github.com/{username}/{app_name_kebab}
+- Old boilerplate remote removed
+- New repository created (private)
+- Code pushed to new repository
+
+# French
+Nouveau dépôt GitHub créé : https://github.com/{username}/{app_name_kebab}
+- Ancien remote boilerplate supprimé
+- Nouveau dépôt créé (privé)
+- Code poussé vers le nouveau dépôt
+```
+
+**Store `{repo_url}` for later reference.**
+
+**If NOT boilerplate repo (already custom):**
+- Skip this step
+- Report: "Git remote already configured: {current_remote}"
+
+---
+
 ### Question 3: Main Features
 
 Ask user to list 3-5 main features:
@@ -199,6 +272,7 @@ Here's what I've gathered:
 
 **App Name:** {app_name}
 **Purpose:** {app_purpose}
+**Repository:** {repo_url ? repo_url : 'Using existing remote'}
 **Main Features:**
 {main_features formatted as bullet list}
 
@@ -215,6 +289,7 @@ Voici ce que j'ai collecté :
 
 **Nom de l'app:** {app_name}
 **Objectif:** {app_purpose}
+**Dépôt:** {repo_url ? repo_url : 'Remote existant conservé'}
 **Fonctionnalités principales:**
 {main_features formatted as bullet list}
 
@@ -244,6 +319,7 @@ questions:
 
 ✅ App name collected (from args or question)
 ✅ App purpose clearly defined
+✅ Git remote checked and new repo created (if boilerplate detected)
 ✅ Main features listed (3-5 items)
 ✅ PRD status determined (with content if provided)
 ✅ Architecture status determined (with content if provided)
@@ -257,6 +333,8 @@ questions:
 ❌ Proceeding without user confirmation
 ❌ Missing any required field (name, purpose, features)
 ❌ Not adapting language to user preference
+❌ Skipping git remote check after getting app purpose
+❌ Leaving boilerplate remote (melvynx/now.ts) linked
 
 ## GATHERING PROTOCOLS:
 
