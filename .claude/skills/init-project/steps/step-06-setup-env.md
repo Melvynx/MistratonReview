@@ -345,6 +345,125 @@ echo "BETTER_AUTH_SECRET=$SECRET"
 
 ---
 
+### EMAIL DOMAIN SETUP (CRITICAL - ASK BEFORE EMAIL_FROM)
+
+**BEFORE asking for EMAIL_FROM, ask if user has a domain:**
+
+Use AskUserQuestion:
+```yaml
+questions:
+  - header: "Domain"
+    question: "{language=en ? 'Do you have a domain name for your app?' : 'Avez-vous un nom de domaine pour votre app ?'}"
+    options:
+      - label: "{language=en ? 'Yes, I have a domain' : 'Oui, j\\'ai un domaine'}"
+        description: "{language=en ? 'e.g., myapp.com, myapp.io' : 'ex: myapp.com, myapp.io'}"
+      - label: "{language=en ? 'No, not yet' : 'Non, pas encore'}"
+        description: "{language=en ? 'I will use Resend test mode' : 'Je vais utiliser le mode test de Resend'}"
+    multiSelect: false
+```
+
+**Store response as `{has_domain}`**
+
+---
+
+#### If user HAS a domain:
+
+**Ask for the domain:**
+```
+# English
+What is your domain name? (e.g., myapp.com)
+
+# French
+Quel est votre nom de domaine ? (ex: myapp.com)
+```
+
+**Store response as `{user_domain}`**
+
+**Then explain domain verification:**
+```
+# English
+You need to verify your domain in Resend:
+1. Go to Resend Dashboard → Domains
+2. Click "Add Domain" and enter: {user_domain}
+3. Add the DNS records shown (MX, TXT for SPF/DKIM)
+4. Wait for verification (usually 5-15 minutes)
+
+After verification, set:
+- EMAIL_FROM: "{app_name} <contact@{user_domain}>"
+- NEXT_PUBLIC_EMAIL_CONTACT: "contact@{user_domain}"
+
+# French
+Vous devez vérifier votre domaine dans Resend:
+1. Allez dans Resend Dashboard → Domains
+2. Cliquez "Add Domain" et entrez: {user_domain}
+3. Ajoutez les enregistrements DNS affichés (MX, TXT pour SPF/DKIM)
+4. Attendez la vérification (généralement 5-15 minutes)
+
+Après vérification, configurez:
+- EMAIL_FROM: "{app_name} <contact@{user_domain}>"
+- NEXT_PUBLIC_EMAIL_CONTACT: "contact@{user_domain}"
+```
+
+**Auto-fill .env with:**
+```
+EMAIL_FROM="{app_name} <contact@{user_domain}>"
+NEXT_PUBLIC_EMAIL_CONTACT="contact@{user_domain}"
+```
+
+---
+
+#### If user DOES NOT have a domain:
+
+**Explain limitations and set test mode:**
+```
+# English
+No problem! Resend provides a test mode:
+
+LIMITATIONS (without domain):
+- Can ONLY send emails to YOUR OWN email address (the one you signed up with)
+- Emails come from: onboarding@resend.dev
+- Perfect for development and testing
+
+When you get a domain later, you can update these values.
+
+Setting up test mode...
+
+# French
+Pas de problème ! Resend fournit un mode test:
+
+LIMITATIONS (sans domaine):
+- Peut SEULEMENT envoyer des emails à VOTRE propre adresse email (celle utilisée pour l'inscription)
+- Les emails viennent de: onboarding@resend.dev
+- Parfait pour le développement et les tests
+
+Quand vous aurez un domaine, vous pourrez mettre à jour ces valeurs.
+
+Configuration du mode test...
+```
+
+**Auto-fill .env with:**
+```
+EMAIL_FROM="onboarding@resend.dev"
+NEXT_PUBLIC_EMAIL_CONTACT="onboarding@resend.dev"
+```
+
+**Inform user:**
+```
+# English
+✓ Email configured in TEST MODE
+- Emails will come from: onboarding@resend.dev
+- Can only send to your Resend account email
+- Update EMAIL_FROM when you have a domain
+
+# French
+✓ Email configuré en MODE TEST
+- Les emails viendront de: onboarding@resend.dev
+- Peut seulement envoyer à l'email de votre compte Resend
+- Mettez à jour EMAIL_FROM quand vous aurez un domaine
+```
+
+---
+
 ### RESEND_AUDIENCE_ID
 
 **What:** Audience ID for newsletter/email list
@@ -360,29 +479,6 @@ echo "BETTER_AUTH_SECRET=$SECRET"
 1. Dans le dashboard Resend, allez dans Audiences
 2. Créez une audience (ex: "{app_name} Newsletter")
 3. Copiez l'Audience ID
-```
-
----
-
-### EMAIL_FROM & NEXT_PUBLIC_EMAIL_CONTACT
-
-**What:** Email addresses for sending and contact
-
-**How to get:**
-```
-# English
-Use your domain email, e.g.:
-- EMAIL_FROM: "{app_name} <contact@yourdomain.com>"
-- NEXT_PUBLIC_EMAIL_CONTACT: "contact@yourdomain.com"
-
-Note: You must verify your domain in Resend first.
-
-# French
-Utilisez votre email de domaine, ex:
-- EMAIL_FROM: "{app_name} <contact@votredomaine.com>"
-- NEXT_PUBLIC_EMAIL_CONTACT: "contact@votredomaine.com"
-
-Note: Vous devez d'abord vérifier votre domaine dans Resend.
 ```
 
 ---
@@ -693,16 +789,17 @@ Ask in this order (most critical first):
 
 1. **DATABASE_URL** & **DATABASE_URL_UNPOOLED** (required)
 2. **REDIS_URL** (required for caching)
-3. **BETTER_AUTH_SECRET** (required, offer auto-generate)
+3. **BETTER_AUTH_SECRET** (required, auto-generate - don't ask!)
 4. **GITHUB_CLIENT_ID** & **GITHUB_CLIENT_SECRET** (for OAuth)
 5. **RESEND_API_KEY** (for emails)
-6. **EMAIL_FROM** & **NEXT_PUBLIC_EMAIL_CONTACT**
-7. **STRIPE_SECRET_KEY** & **NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY**
-8. **STRIPE_WEBHOOK_SECRET**
-9. STRIPE_*_PLAN_ID (can skip)
-10. **RESEND_AUDIENCE_ID** (can skip)
-11. **NEXT_PUBLIC_POSTHOG_*** (optional)
-12. **FILE UPLOAD PROVIDER** (ask which provider, then configure accordingly)
+6. **DOMAIN QUESTION** (ask if user has domain - determines EMAIL_FROM)
+7. **EMAIL_FROM** & **NEXT_PUBLIC_EMAIL_CONTACT** (auto-fill based on domain answer)
+8. **STRIPE_SECRET_KEY** & **NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY**
+9. **STRIPE_WEBHOOK_SECRET**
+10. STRIPE_*_PLAN_ID (can skip)
+11. **RESEND_AUDIENCE_ID** (can skip)
+12. **NEXT_PUBLIC_POSTHOG_*** (optional)
+13. **FILE UPLOAD PROVIDER** (ask which provider, then configure accordingly)
 
 ---
 

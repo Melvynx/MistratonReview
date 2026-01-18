@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-01-18
+
+CHORE: Add Prisma security and performance rules (orgId filtering, select over include, codebase patterns)
+FEATURE: Add domain question to init-project workflow for Resend email configuration (with/without domain support)
+
 ## 2026-01-13
 
 CHORE: Remove 14 unused files including admin components, docs components, and utility files
