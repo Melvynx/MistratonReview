@@ -14,8 +14,23 @@ import {
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+function extractApiOrgSlug(pathname: string): string | null {
+  const match = pathname.match(/^\/api\/orgs\/([^/]+)/);
+  return match ? match[1] : null;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/api/orgs/")) {
+    const slug = extractApiOrgSlug(pathname);
+    if (slug) {
+      const response = NextResponse.next();
+      response.headers.set("x-org-slug", slug);
+      return response;
+    }
+    return NextResponse.next();
+  }
 
   if (pathname === "/") {
     return handleRootRedirect(request) ?? NextResponse.next();
@@ -65,5 +80,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/api/orgs/:path*",
   ],
 };

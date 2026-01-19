@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-01-19
+
+FEATURE: Add x-org-slug header support for /api/orgs/* routes in middleware
+
 ## 2026-01-18
 
 CHORE: Add Prisma security and performance rules (orgId filtering, select over include, codebase patterns)
