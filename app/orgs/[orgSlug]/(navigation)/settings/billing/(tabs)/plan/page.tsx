@@ -132,7 +132,13 @@ async function BillingPlanPage() {
                   price={`$${plan.price}`}
                   period="month"
                   features={features}
-                  action={<PlanCardAction label={ctaLabel} />}
+                  action={
+                    <PlanCardAction
+                      label={ctaLabel}
+                      currentPlan={currentPlanName}
+                      targetPlan={plan.name}
+                    />
+                  }
                   className={
                     plan.isPopular ? "border-primary shadow-md" : undefined
                   }

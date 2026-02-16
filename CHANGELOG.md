@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-01-24
+
+FEATURE: Add "Dismiss all" button to changelog sidebar stack for dismissing multiple changelogs at once
+
+## 2026-01-22
+
+FEATURE: Add changelog system documentation in content/docs/changelog.mdx
+FEATURE: Add add-documentation skill with SKILL.md and reference for creating documentation in content/docs/
+FEATURE: Add documentation template and create-doc.sh script (mandatory for creating new docs)
+
+## 2026-01-21
+
+FIX: Free plan users now redirect to Stripe checkout instead of billing portal when upgrading
+
 ## 2026-01-19
 
 FEATURE: Add x-org-slug header support for /api/orgs/* routes in middleware

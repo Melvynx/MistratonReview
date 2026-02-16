@@ -14,6 +14,15 @@ export async function dismissChangelogAction(slug: string) {
   await redisClient.sadd(key, slug);
 }
 
+export async function dismissAllChangelogsAction(slugs: string[]) {
+  const user = await getUser();
+  if (!user) return;
+  if (slugs.length === 0) return;
+
+  const key = DISMISSED_CHANGELOG_KEY(user.id);
+  await redisClient.sadd(key, ...slugs);
+}
+
 export async function getDismissedChangelogs(): Promise<string[]> {
   const user = await getUser();
   if (!user) return [];
