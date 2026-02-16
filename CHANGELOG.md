@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-02-16
+
+FEATURE: Add /api/status route with optional random number query parameter
+FEATURE: Add /api/status health check route
+FEATURE: Add middleware redirect from /admin/interdit to /home
+
 ## 2026-01-24
 
 FEATURE: Add "Dismiss all" button to changelog sidebar stack for dismissing multiple changelogs at once

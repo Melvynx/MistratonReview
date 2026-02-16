@@ -36,6 +36,12 @@ export async function proxy(request: NextRequest) {
     return handleRootRedirect(request) ?? NextResponse.next();
   }
 
+  if (pathname === "/admin/interdit") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/home";
+    return NextResponse.redirect(url);
+  }
+
   if (isAdminRoute(pathname)) {
     const adminUser = await validateAdminAccess(request);
     if (!adminUser) {
