@@ -1,5 +1,5 @@
 {
-  "name": "nowts",
+  "name": "mistraton-review",
   "nowts-version": "2.1.0",
   "version": "0.1.0",
   "private": true,
@@ -31,7 +31,11 @@
     "seed": "pnpm tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/mistral": "^3.0.21",
     "@hookform/resolvers": "^5.2.2",
+    "@mistralai/mistralai": "^1.14.1",
+    "@octokit/auth-app": "^8.2.0",
+    "@octokit/rest": "^22.0.1",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@prisma/client-runtime-utils": "^7.1.0",
@@ -65,6 +69,7 @@
     "@tanstack/react-query": "^5.90.12",
     "@tanstack/react-query-devtools": "^5.91.1",
     "@vercel/blob": "^2.0.0",
+    "ai": "^6.0.105",
     "better-auth": "^1.4.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

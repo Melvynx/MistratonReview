@@ -16,9 +16,9 @@ export const Hero = () => {
               variant="h1"
               className="text-5xl font-semibold tracking-tight text-balance sm:text-7xl lg:text-7xl"
             >
-              Write the best content and Grow your{" "}
+              AI Code Review for Every{" "}
               <span className="relative inline-block">
-                <span>business</span>
+                <span>Pull Request</span>
                 <CircleSvg className="fill-primary absolute inset-0" />
               </span>
             </Typography>
@@ -26,15 +26,16 @@ export const Hero = () => {
               variant="large"
               className="text-muted-foreground mt-8 text-lg font-medium text-pretty sm:text-xl/8"
             >
-              Build for Thread, create, schedule and publish your content to
-              your account with AI.
+              Get instant, senior-level code review comments on every PR. Catch
+              bugs, security issues, and performance problems before they reach
+              production.
             </Typography>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 href="/signin"
                 className={buttonVariants({ size: "lg", variant: "default" })}
               >
-                Get started
+                Install on GitHub
               </Link>
               <Link
                 href="#pricing"

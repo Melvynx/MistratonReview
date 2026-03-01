@@ -38,21 +38,21 @@ export default function HomePage() {
         reviews={[
           {
             image: "https://i.pravatar.cc/300?u=a1",
-            name: "Sophie",
-            review: `Threader **has completely transformed the way I manage my social media** content. The ability to schedule posts and use AI for content suggestions has saved me hours each week.`,
-            role: "Digital Marketer",
+            name: "Sarah",
+            review: `MistratonReview **catches bugs that would have slipped through** our manual reviews. It saved us from deploying a critical SQL injection vulnerability last week.`,
+            role: "CTO",
           },
           {
             image: "https://i.pravatar.cc/300?u=a2",
-            name: "Alex",
-            review: `Using Threader has significantly boosted my online engagement. **The analytics tool helps me understand what works**, allowing me to refine my strategy and grow my follower base.`,
-            role: "Social Media Influencer",
+            name: "Marcus",
+            review: `**The inline comments are incredibly specific.** Instead of vague suggestions, it points to the exact line and explains the issue with a fix.`,
+            role: "Senior Developer",
           },
           {
             image: "https://i.pravatar.cc/300?u=a3",
-            name: "Jordan",
-            review: `The ease of scheduling and the AI-generated content features are game-changers. **Threader's user-friendly interface** makes it perfect for anyone looking to enhance their online presence.`,
-            role: "Entrepreneur",
+            name: "Elena",
+            review: `**Our review turnaround dropped from days to minutes.** MistratonReview handles the first pass so our team can focus on architecture decisions.`,
+            role: "Engineering Lead",
           },
         ]}
       />
@@ -61,9 +61,9 @@ export default function HomePage() {
 
       <ReviewSingle
         image="https://i.pravatar.cc/300?u=5"
-        name="Michel"
-        review={`Threader **has completely transformed** the way I manage my social media content. The ability to schedule posts and use AI for content suggestions **has saved me hours each week.**`}
-        role="Digital Marketer"
+        name="David"
+        review={`MistratonReview **has become an essential part of our CI pipeline.** Every PR gets a thorough AI review before any human looks at it.`}
+        role="VP of Engineering"
         compagnyImage="https://1000logos.net/wp-content/uploads/2017/03/McDonalds-Logo-2003.png"
         key={1}
       />
@@ -71,9 +71,10 @@ export default function HomePage() {
       <FeaturesSection
         features={[
           {
-            badge: "⏰ Schedule",
-            title: "Schedule your post",
-            description: "Schedule your post on the Threader in a few clicks.",
+            badge: "⚡ Instant Review",
+            title: "AI reviews your PR in seconds",
+            description:
+              "Open a pull request and get detailed code review comments within seconds, not hours.",
             component: (
               <Image
                 src="/images/placeholder1.gif"
@@ -86,10 +87,10 @@ export default function HomePage() {
             ),
           },
           {
-            badge: "📅 Calendar",
-            title: "See what you scheduled",
+            badge: "💬 Inline Comments",
+            title: "Comments on the exact lines that matter",
             description:
-              "With the calendar view, you can see what you scheduled and when.",
+              "Get specific, actionable feedback posted directly on the lines that need attention.",
             component: (
               <Image
                 src="/images/placeholder1.gif"
@@ -101,10 +102,10 @@ export default function HomePage() {
             ),
           },
           {
-            badge: "👁️ Preview",
-            title: "Preview your post",
+            badge: "🔒 Security Scanner",
+            title: "Catch vulnerabilities before production",
             description:
-              "Preview your post before scheduling it to see how it will look like.",
+              "Detects SQL injection, XSS, hardcoded secrets, and other security issues automatically.",
             component: (
               <Image
                 src="/images/placeholder1.gif"
@@ -117,10 +118,10 @@ export default function HomePage() {
             ),
           },
           {
-            badge: "🔄 Repost",
-            title: "Schedule repost",
+            badge: "🎯 Severity Levels",
+            title: "Prioritize what matters most",
             description:
-              "Automatically repost your post after a certain amount of time.",
+              "Every comment is categorized as critical, warning, or suggestion so you know what to fix first.",
             component: (
               <Image
                 src="/images/placeholder1.gif"
@@ -146,39 +147,39 @@ export default function HomePage() {
       <FAQSection
         faq={[
           {
-            question: "What is Threader?",
+            question: "What is MistratonReview?",
             answer:
-              "Threader is an innovative platform designed to help you write, schedule, and publish content to your account with the assistance of AI, enhancing your business's online presence.",
+              "MistratonReview is an AI-powered GitHub App that automatically reviews every pull request using Mistral AI. It posts inline code review comments directly on the lines that need attention.",
           },
           {
-            question: "How does AI Content Generation work?",
+            question: "How does the AI review work?",
             answer:
-              "Our AI Content Generation feature leverages the power of artificial intelligence to create unique and engaging content for your Threads, making content creation easier and more efficient.",
+              "When you open or update a pull request, MistratonReview automatically fetches the code changes, sends them to Mistral AI for analysis, and posts inline comments on specific lines with actionable feedback.",
           },
           {
-            question: "Can I schedule my threads in advance?",
+            question: "What issues does it catch?",
             answer:
-              "Yes, with Threader, you can schedule your threads for a specific time, allowing you to maintain a consistent online presence without the need to manually post every day.",
+              "MistratonReview identifies bugs, security vulnerabilities, performance issues, and best practice violations. It does not comment on code style or formatting - that is your linter's job.",
           },
           {
-            question: "What is the Now.TS project?",
+            question: "How long does a review take?",
             answer:
-              "Now.TS is a new project announced on our platform that enables users to create professional Next.js applications in days, streamlining the development process.",
+              "Most reviews complete within 10-30 seconds of opening a pull request, depending on the size of the changes.",
           },
           {
-            question: "How can I get more followers?",
+            question: "Which languages are supported?",
             answer:
-              "To gain more followers, focus on creating content related to Next.js, as our analysis shows it's highly engaging. Utilize our research tools to understand trends and improve your content strategy.",
+              "MistratonReview works with any programming language. The AI analyzes code diffs regardless of the language, with particularly strong results for TypeScript, JavaScript, Python, Go, and Rust.",
           },
           {
-            question: "What are the benefits of posting with Threader?",
+            question: "Is my code secure?",
             answer:
-              "Posting with Threader allows you to schedule posts, avoid daily manual postings, track your scheduled content easily, and maintain consistency in your online activity.",
+              "Your code is sent to Mistral AI for analysis and is not stored. MistratonReview only accesses the diff of changed files, not your entire repository.",
           },
           {
-            question: "What pricing plans does Threader offer?",
+            question: "What are the pricing plans?",
             answer:
-              "Threader offers two pricing plans: THREADER FREE, perfect for tiny creators, allowing you to schedule 1 post in advance; and THREADER PREMIUM, ideal for content creators, offering unlimited scheduling, post previews, and auto-reposting features.",
+              "MistratonReview offers a free tier for open source projects and affordable plans for teams. Check the pricing section for details.",
           },
         ]}
       />
@@ -189,73 +190,73 @@ export default function HomePage() {
         reviews={[
           {
             image: "https://i.pravatar.cc/300?u=b1",
-            name: "Eva",
+            name: "Priya",
             review:
-              "Since I started using Threader, my content creation process has been streamlined. The AI suggestions are spot on, helping me to connect better with my audience. Highly recommend for anyone looking to elevate their content game.",
-            role: "Content Creator",
+              "MistratonReview caught a race condition in our async code that none of us spotted during manual review. It saved us from a nasty production bug on day one.",
+            role: "Backend Engineer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b2",
-            name: "Lucas",
+            name: "Tom",
             review:
-              "Threader's scheduling feature is a lifesaver. It allows me to plan my content calendar efficiently, ensuring I never miss posting on the optimal days and times. Fantastic tool for social media managers.",
-            role: "Social Media Manager",
+              "As an open source maintainer, I get dozens of PRs a week. MistratonReview handles the first pass so I can focus on design decisions instead of hunting for typos and basic bugs.",
+            role: "Open Source Maintainer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b3",
-            name: "Mia",
+            name: "Fatima",
             review:
-              "The analytics provided by Threader are invaluable. They've given me insights into what my audience loves, helping me double my engagement rate in just a few months.",
-            role: "Digital Marketer",
+              "The security scanning is genuinely impressive. It flagged a hardcoded API key that had been in a branch for two days without anyone noticing.",
+            role: "Security Engineer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b4",
-            name: "Noah",
+            name: "Ryan",
             review:
-              "I was skeptical about AI-generated content, but Threader changed my mind. The content feels personal and has significantly increased my interaction rates.",
-            role: "Blogger",
+              "I was skeptical about AI code review, but the inline comments are precise and actionable. It does not leave vague feedback - it tells you exactly what to fix and why.",
+            role: "Full Stack Developer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b5",
-            name: "Isabella",
+            name: "Aiko",
             review:
-              "Threader's user interface is incredibly user-friendly. I was able to onboard my team in no time, and we've seen a marked improvement in our social media performance.",
-            role: "Team Leader",
+              "Our junior developers have improved so much faster since we added MistratonReview. The detailed feedback on every PR acts like a mentor guiding their code.",
+            role: "Engineering Manager",
           },
           {
             image: "https://i.pravatar.cc/300?u=b6",
-            name: "Oliver",
+            name: "Carlos",
             review:
-              "Auto-reposting with Threader is a feature I didn't know I needed. It's great for getting more mileage out of your best content without any extra effort.",
-            role: "Freelancer",
+              "Setup took less than two minutes. I installed the GitHub App, and the next PR my team opened already had a full review posted in seconds.",
+            role: "DevOps Engineer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b7",
-            name: "Sophia",
+            name: "Nina",
             review:
-              "Joining the Threader community has opened up networking opportunities with fellow content creators. It's more than just a tool; it's a platform for growth.",
-            role: "Influencer",
+              "The severity levels are a great touch. I can immediately see what is critical versus what is just a suggestion, so I know exactly where to focus my attention.",
+            role: "Senior Developer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b8",
-            name: "Elijah",
+            name: "Ben",
             review:
-              "The calendar view in Threader helps me visualize my content strategy for the entire month. It's been a game changer for my planning process.",
-            role: "Strategist",
+              "We reduced our average PR review cycle from 4 hours to under 30 minutes. MistratonReview does the heavy lifting so human reviewers can add real value.",
+            role: "Tech Lead",
           },
           {
             image: "https://i.pravatar.cc/300?u=b9",
-            name: "Charlotte",
+            name: "Lena",
             review:
-              "I appreciate the flexibility in Threader's pricing plans. It's accessible for creators at any stage of their journey, from beginners to established influencers.",
-            role: "Entrepreneur",
+              "Perfect for solo developers too. Having an AI reviewer on every PR has made me a much more careful and thoughtful programmer.",
+            role: "Indie Developer",
           },
           {
             image: "https://i.pravatar.cc/300?u=b10",
-            name: "James",
+            name: "Kwame",
             review:
-              "The customer support team at Threader is fantastic. They've been quick to respond and helpful with any questions I've had. Great service overall.",
-            role: "Customer",
+              "The file filtering is smart - it skips package-lock.json and generated files automatically. Reviews stay focused on the code that actually matters.",
+            role: "Software Architect",
           },
         ]}
       />

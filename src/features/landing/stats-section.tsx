@@ -12,24 +12,24 @@ type StatProps = {
 
 const stats: StatProps[] = [
   {
-    number: 476,
-    suffix: "K",
-    text: "Threads scheduled every month.",
+    number: 10,
+    suffix: "K+",
+    text: "Pull requests reviewed.",
   },
   {
-    number: 1.44,
-    suffix: "K",
-    text: "Users that use our platform.",
+    number: 50,
+    suffix: "K+",
+    text: "Bugs caught before production.",
   },
   {
-    number: 1.5,
-    suffix: "M+",
-    text: "Interactions with posts created by our users.",
+    number: 30,
+    suffix: "s",
+    text: "Average review time per PR.",
   },
   {
-    number: 192,
-    suffix: "K",
-    text: "Users impacted by our published posts.",
+    number: 2000,
+    suffix: "+",
+    text: "Developer hours saved.",
   },
 ];
 

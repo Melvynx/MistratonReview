@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-03-01
+
+FEATURE: Add database models for GitHub installations, repositories, PR reviews, and review comments
+FEATURE: Add query helpers for org installations, repositories, reviews, and review stats
+FEATURE: Build setup page with interactive repo selection after GitHub App installation
+FEATURE: Build dynamic dashboard with real PR review data, stats cards, and monitored repos
+FEATURE: Build review history page with severity breakdown and GitHub links
+FEATURE: Update webhook handler to persist review results to database
+FEATURE: Add API route for fetching GitHub installation repositories
+FEATURE: Add GitHub webhook handler with signature verification, Mistral AI review, and inline PR comments
+FEATURE: Add GitHub OAuth callback at /api/github/auth/callback
+FEATURE: Add src/lib/github.ts with Octokit helpers
+FEATURE: Add src/lib/mistral.ts with Mistral AI review logic
+CHORE: Replace all boilerplate copy with MistratonReview AI code review messaging
+CHORE: Update changelog MDX entries with MistratonReview content
+
+CHORE: Apply sunset theme from tinte.dev to globals.css, restore NOWTS custom colors (success, warning, info), and clean up duplicate :root block
+FEATURE: Add setup page at /orgs/[orgSlug]/setup explaining GitHub App installation success
+FEATURE: Add @octokit/rest, @octokit/auth-app, and @mistralai/mistralai dependencies
+CHORE: Rename package name from "nowts" to "mistraton-review"
+CHORE: Update site-config.ts with MistratonReview branding (title, description, domain, appId)
+CHORE: Add GitHub App and Mistral AI env vars to .env-template
+CHORE: Create .env from template with auto-generated BETTER_AUTH_SECRET
+
 ## 2026-02-16
 
 FEATURE: Add /api/status route with optional random number query parameter

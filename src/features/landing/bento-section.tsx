@@ -6,12 +6,12 @@ import { Typography } from "@/components/nowts/typography";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import {
-  BarChart3,
-  Calendar,
-  CalendarCheck,
+  AlertTriangle,
   CheckCircle,
+  Filter,
+  MessageSquareCode,
+  ShieldAlert,
   Sparkles,
-  X,
 } from "lucide-react";
 import type { Variants } from "motion/react";
 import { motion } from "motion/react";
@@ -56,7 +56,7 @@ const Skeleton1 = () => {
         />
         <div>
           <p className="text-xs text-neutral-500">
-            Create a Thread to announce Now.ts
+            Review PR #42: add user authentication
           </p>
         </div>
       </motion.div>
@@ -65,8 +65,8 @@ const Skeleton1 = () => {
         className="border-border bg-background flex flex-row items-start justify-end gap-2 rounded-2xl border p-3"
       >
         <p className="text-xs text-neutral-500">
-          Today I announced my new project, Now.TS, the perfect way to create
-          professional Next.js application in days.
+          Line 42: potential SQL injection - use parameterized queries instead
+          of string concatenation.
         </p>
         <div className="size-6 shrink-0 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
       </motion.div>
@@ -88,13 +88,13 @@ const Skeleton2 = () => {
       <motion.div>
         <Alert variant="default" className="">
           <Loader size={20} />
-          <AlertTitle>Schedule your threads...</AlertTitle>
+          <AlertTitle>Analyzing PR diff...</AlertTitle>
         </Alert>
       </motion.div>
       <motion.div variants={variants}>
         <Alert variant="success" className="">
           <CheckCircle size={20} />
-          <AlertTitle>Your threads are now scheduled for 7:00 AM</AlertTitle>
+          <AlertTitle>Review posted - 3 comments on 2 files</AlertTitle>
         </Alert>
       </motion.div>
     </motion.div>
@@ -162,28 +162,28 @@ const Skeleton4 = () => {
         variants={first}
         className="border-border bg-background flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border p-4"
       >
-        <Typography variant="large">+123 followers</Typography>
-        <Typography variant={"muted"}>In the last 30 days</Typography>
-        <Typography variant={"muted"} className="text-green-500">
-          +12%
+        <Typography variant="large">Critical</Typography>
+        <Typography variant={"muted"}>2 issues</Typography>
+        <Typography variant={"muted"} className="text-red-500">
+          Fix now
         </Typography>
       </motion.div>
       <motion.div className="border-border bg-background flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border p-4">
-        <Typography variant="large">+1.4 M Views</Typography>
-        <Typography variant={"muted"}>In the last 30 days</Typography>
-        <Typography variant={"muted"} className="text-green-500">
-          +21%
+        <Typography variant="large">Warning</Typography>
+        <Typography variant={"muted"}>5 issues</Typography>
+        <Typography variant={"muted"} className="text-yellow-500">
+          Review
         </Typography>
       </motion.div>
       <motion.div
         variants={second}
         className="border-border bg-background flex h-full w-1/3 flex-col items-center justify-center rounded-2xl border p-4"
       >
-        <Typography variant="large">1244 likes</Typography>
-        <Typography variant="large">766 replis</Typography>
-        <Typography variant={"muted"}>In the last 30 days</Typography>
+        <Typography variant="large">Suggestion</Typography>
+        <Typography variant="large">8 notes</Typography>
+        <Typography variant={"muted"}>Optional</Typography>
         <Typography variant={"muted"} className="text-green-500">
-          +12%
+          Consider
         </Typography>
       </motion.div>
     </motion.div>
@@ -234,7 +234,7 @@ const Skeleton5 = () => {
           className="size-10 rounded-full"
         />
         <p className="text-xs text-neutral-500">
-          What I need to do to get more followers ?
+          Which files should be excluded from reviews?
         </p>
       </motion.div>
       <motion.div
@@ -242,7 +242,7 @@ const Skeleton5 = () => {
         className="border-border bg-background flex flex-row items-start justify-end gap-2 rounded-2xl border p-3"
       >
         <div>
-          <p className="text-xs text-neutral-500">Searching...</p>
+          <p className="text-xs text-neutral-500">Filtering...</p>
           <motion.p
             className="text-xs text-neutral-500"
             variants={{
@@ -254,8 +254,8 @@ const Skeleton5 = () => {
               },
             }}
           >
-            Based on the Threads activity of the past 30 days, you should focus
-            creating content on Next.js
+            Skipping: package-lock.json, *.min.js, *.d.ts, generated files.
+            Reviewing: 4 changed source files.
           </motion.p>
         </div>
         <div className="size-6 shrink-0 rounded-full bg-gradient-to-r from-pink-500 to-violet-500" />
@@ -266,10 +266,11 @@ const Skeleton5 = () => {
 
 const items = [
   {
-    title: "AI Content Generation",
+    title: "AI Analysis",
     description: (
       <span className="text-sm">
-        Experience the power of AI in generating unique content.
+        Intelligent code review powered by Mistral AI with senior-level
+        feedback.
       </span>
     ),
     header: <Skeleton1 />,
@@ -277,48 +278,51 @@ const items = [
     icon: <Sparkles size={20} />,
   },
   {
-    title: "Schedule with ease",
+    title: "Inline Comments",
     description: (
       <span className="text-sm">
-        We help you schedule your threads with ease.
+        Feedback posted directly on the exact lines that need attention.
       </span>
     ),
     header: <Skeleton2 />,
     className: "md:col-span-1",
-    icon: <Calendar size={20} />,
+    icon: <MessageSquareCode size={20} />,
   },
   {
-    title: "Calendar View",
+    title: "Security Scan",
     description: (
       <span className="text-sm">
-        See what you have planned for the day with our calendar view.
+        Detects SQL injection, XSS, hardcoded secrets, and other
+        vulnerabilities.
       </span>
     ),
     header: <Skeleton3 />,
     className: "md:col-span-1",
-    icon: <CalendarCheck size={20} />,
+    icon: <ShieldAlert size={20} />,
   },
   {
-    title: "Threads Analysis",
+    title: "Summary Report",
     description: (
       <span className="text-sm">
-        Understand your threads with our powerful analytics.
+        Every comment categorized as critical, warning, or suggestion so you
+        know what to fix first.
       </span>
     ),
     header: <Skeleton4 />,
     className: "md:col-span-2",
-    icon: <BarChart3 size={20} />,
+    icon: <AlertTriangle size={20} />,
   },
 
   {
-    title: "See what works",
+    title: "File Filtering",
     description: (
       <span className="text-sm">
-        Understand the hype and trends with our powerful research tools.
+        Automatically skips lockfiles, minified files, and generated code to
+        focus on what matters.
       </span>
     ),
     header: <Skeleton5 />,
     className: "md:col-span-1",
-    icon: <X className="size-4 text-neutral-500" />,
+    icon: <Filter size={20} />,
   },
 ];

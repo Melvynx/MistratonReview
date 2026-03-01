@@ -1,306 +1,199 @@
-Welcome to [NOW.TS](https://nowts.app) directory.
+# MistratonReview
 
-## Setup the project
+**AI-powered code review for every pull request, powered by Mistral AI.**
 
-Please follow the [NOW.TS Course](https://codeline.app/courses/clqn8pmte0001lr54itcjzl59/lessons/clqn8pz990003112iia11p7uo) to setup the project.
+> Built for the [Mistral AI Hackathon](https://mistral.ai/) - an agentic GitHub App that automatically reviews every PR using Mistral AI as a senior code reviewer.
 
-## Environment Variables Setup
+## What is MistratonReview?
 
-Before running the application, you'll need to configure several environment variables. Copy the `.env-template` file to `.env` and fill in the required values:
+MistratonReview is a GitHub App that installs on your repositories and automatically reviews every pull request within seconds. It uses **Mistral AI** (`mistral-large-latest`) with an agentic approach - the AI doesn't just look at diffs, it actively reads your codebase to understand context before making any judgment.
+
+### How It Works
+
+```
+PR Opened -> GitHub Webhook -> Fetch PR Diff -> Mistral AI Agent Review -> Inline Comments
+```
+
+1. You open a pull request
+2. GitHub sends a webhook to MistratonReview
+3. The AI agent reads the diff, then explores your codebase for context (imports, consumers, project structure)
+4. It posts inline code review comments on exact lines with severity ratings
+5. A summary comment shows the overall assessment with severity breakdown
+
+### Key Features
+
+- **Agentic Review** - The AI uses tools (`readFile`, `listDirectory`) to explore your repo and understand how changed code is actually used before reviewing
+- **Inline Comments** - Review comments appear directly on the relevant lines in the PR
+- **Severity Levels** - Each comment is classified as Critical, Warning, or Suggestion
+- **Smart File Filtering** - Automatically skips lockfiles, minified files, images, generated code, and type declarations
+- **Summary Report** - Every review includes a summary comment with a severity breakdown table
+- **Review History** - Dashboard to track all reviews across your repositories
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **AI Engine** | [Mistral AI](https://mistral.ai/) (`mistral-large-latest`) via [@ai-sdk/mistral](https://www.npmjs.com/package/@ai-sdk/mistral) |
+| **AI Framework** | [Vercel AI SDK](https://sdk.vercel.ai/) with tool calling (agentic) |
+| **Framework** | [Next.js 16](https://nextjs.org/) with App Router |
+| **Language** | TypeScript (strict mode) |
+| **GitHub Integration** | [Octokit](https://github.com/octokit/rest.js) + GitHub App (webhooks, OAuth) |
+| **Database** | PostgreSQL with [Prisma ORM](https://www.prisma.io/) |
+| **Auth** | [Better Auth](https://www.better-auth.com/) with GitHub OAuth |
+| **Styling** | [TailwindCSS v4](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/) |
+| **Deployment** | [Vercel](https://vercel.com/) |
+
+## Architecture
+
+### Agentic Review Flow
+
+The core of MistratonReview is an AI agent (not a simple prompt-response). Using the Vercel AI SDK's `generateText` with tool calling:
+
+```
+Mistral AI Agent
+  |-- readFile(path)       -> Reads any source file from the repo via GitHub API
+  |-- listDirectory(path)  -> Lists directory contents to understand structure
+  |-- submitReview(...)    -> Submits the final review with comments and summary
+```
+
+The agent follows a structured review process:
+
+1. **Phase 1: Understand Context** - Reads project files, checks imports, understands deployment context
+2. **Phase 2: Deep Review** - Analyzes each changed file for bugs, security issues, performance problems
+3. **Phase 3: Filter Ruthlessly** - Only keeps comments a senior engineer would actually flag
+
+### Webhook Flow
+
+```
+GitHub (PR event)
+  -> POST /api/webhooks/github
+  -> Verify HMAC-SHA256 signature
+  -> Fetch PR files via Octokit
+  -> Filter out non-reviewable files
+  -> Run agentic review with Mistral AI
+  -> Post inline comments + summary via GitHub API
+  -> Persist review to database
+```
+
+### Database Schema
+
+```
+GithubInstallation (1) -> (N) GithubRepository (1) -> (N) PullRequestReview (1) -> (N) ReviewComment
+```
+
+## Mistral AI Integration
+
+MistratonReview uses Mistral AI in two ways:
+
+### 1. Agentic Review (Primary - `src/lib/review-agent.ts`)
+
+Uses `@ai-sdk/mistral` with the Vercel AI SDK for tool-calling. The agent can make up to 15 steps, reading files and exploring the repo before submitting its review.
+
+```typescript
+const result = await generateText({
+  model: mistral("mistral-large-latest"),
+  system: SYSTEM_PROMPT,
+  prompt: userMessage,
+  tools: { readFile, listDirectory, submitReview },
+  stopWhen: stepCountIs(15),
+  temperature: 0.1,
+});
+```
+
+### 2. Direct Review (Fallback - `src/lib/mistral.ts`)
+
+Uses `@mistralai/mistralai` SDK directly for simpler, per-file reviews with JSON structured output.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm 10+
+- PostgreSQL database
+- A [GitHub App](https://docs.github.com/en/apps/creating-github-apps)
+- A [Mistral AI API key](https://console.mistral.ai/)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Melvynx/MistratonReview.git
+cd MistratonReview
+pnpm install
+```
+
+### 2. Configure environment variables
 
 ```bash
 cp .env-template .env
 ```
 
-### Database
+Fill in the required values:
 
-You can install [Postgres (MacOS)](https://postgresapp.com/) or [Postgres (Windows)](https://www.postgresql.org/download/windows/) to have a local database.
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `GITHUB_APP_ID` | Your GitHub App ID |
+| `GITHUB_APP_PRIVATE_KEY` | Your GitHub App private key |
+| `GITHUB_WEBHOOK_SECRET` | Secret for verifying GitHub webhooks |
+| `GITHUB_CLIENT_ID` | GitHub OAuth client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth client secret |
+| `MISTRAL_API_KEY` | Your Mistral AI API key |
+| `BETTER_AUTH_SECRET` | Random secret for auth sessions |
 
-Launch the application, then configure your database URL:
+### 3. Setup the database
 
 ```bash
-DATABASE_URL="postgresql://NAME:@localhost:5432/PROJECT_NAME"
+pnpm prisma migrate deploy
+pnpm prisma generate
 ```
 
-To find your `NAME`:
+### 4. Run the development server
 
 ```bash
-# MacOS/Linux
-whoami
-
-# Windows
-echo %username%
-```
-
-For `PROJECT_NAME`, choose any name you want - we recommend using the same name as your application.
-
-### Redis (Required)
-
-Redis is **required** for caching and provides ~90% performance improvement.
-
-#### Option 1: Local Redis Installation
-
-**macOS** (using Homebrew):
-
-```bash
-# Install Redis
-brew install redis
-
-# Start Redis server
-brew services start redis
-
-# Or run manually
-redis-server
-```
-
-See the [official macOS installation guide](https://redis.io/docs/latest/operate/oss_and_stack/install/archive/install-redis/install-redis-on-mac-os/) for more details.
-
-**Windows**:
-
-Download and install Redis from the [official Windows guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/).
-
-**Linux**:
-
-```bash
-# Ubuntu/Debian
-sudo apt-get install redis-server
-
-# Start Redis
-sudo systemctl start redis-server
-```
-
-After installation, add to your `.env`:
-
-```bash
-REDIS_URL=redis://localhost:6379
-```
-
-#### Option 2: Docker (Quick Setup)
-
-```bash
-# Start Redis with Docker
-docker run -d -p 6379:6379 redis:alpine
-
-# Add to .env
-REDIS_URL=redis://localhost:6379
-```
-
-#### Option 3: Redis Cloud Services (Recommended for Production)
-
-For production deployments, we recommend using a managed Redis service:
-
-**Upstash** (Serverless Redis):
-
-- Free tier: 10,000 commands/day
-- Serverless with pay-per-use pricing
-- Sign up at [console.upstash.com](https://console.upstash.com)
-- Copy your Redis URL and add to `.env`
-
-**Redis Cloud** (Official Redis):
-
-- Free tier: 30MB RAM
-- Managed by Redis Labs
-- Sign up at [redis.com/try-free](https://redis.com/try-free/)
-- Get your connection URL from the dashboard
-
-**Railway**:
-
-- $5/month for 512MB RAM
-- Simple setup and deployment
-- Go to [railway.app](https://railway.app) and deploy Redis
-
-For detailed setup instructions for each provider, see the [Redis Setup Guide](./docs/redis-setup.md).
-
-### Better-Auth
-
-For [Better-Auth](https://www.better-auth.com/), we recommend starting with the GitHub provider. You can add more providers later.
-
-By default, the template also includes Magic Link (requires Resend setup) and email/password authentication.
-
-You'll need a `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` from [GitHub Developer Settings](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app).
-
-Configure these settings:
-
-- `Authorization callback URL`: `http://localhost:3000/api/auth/callback/github`
-- `Homepage URL`: `http://localhost:3000`
-
-Then add to your `.env`:
-
-```bash
-GITHUB_CLIENT_ID="YOUR_GITHUB_ID"
-GITHUB_CLIENT_SECRET="YOUR_GITHUB_SECRET"
-```
-
-Generate a `BETTER_AUTH_SECRET`:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
-
-Copy the result and add it to your `.env`:
-
-```bash
-BETTER_AUTH_SECRET="YOUR_SECRET"
-```
-
-### Resend
-
-Create a [Resend account](https://resend.com) and [create an API key](https://resend.com/api-keys). You'll also need to [configure a domain](https://resend.com/domains) - either your application's domain or any domain you own.
-
-- [Tutorial for Resend API keys](https://resend.com/docs/dashboard/api-keys/introduction)
-- [Tutorial for Resend domains](https://resend.com/docs/dashboard/domains/introduction)
-
-Add the API key to your `.env`:
-
-```bash
-RESEND_API_KEY="YOUR_API_KEY"
-EMAIL_FROM="contact@yourdomain.com"
-NEXT_PUBLIC_EMAIL_CONTACT="your@email.com"
-```
-
-#### Resend Audience (Optional)
-
-An audience allows you to send marketing emails to your users (e.g., product launch announcements, promotions).
-
-The application works without an audience, but it's useful for sending bulk emails to your user base.
-
-To create an audience:
-
-1. Go to [Resend Audiences](https://resend.com/audiences)
-2. Create a new audience
-3. Copy the audience ID and add it to your `.env`:
-
-```bash
-RESEND_AUDIENCE_ID="YOUR_AUDIENCE_ID"
-```
-
-### Stripe
-
-If you don't have a Stripe account yet, [create one](https://dashboard.stripe.com/register).
-
-Follow [this documentation](https://stripe.com/docs/development/get-started) to get your **test** API keys.
-
-Add them to your `.env`:
-
-```bash
-STRIPE_SECRET_KEY="sk_test_..."
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
-```
-
-#### Stripe Webhooks
-
-For webhooks, first login to Stripe CLI:
-
-```bash
-stripe login
-```
-
-Then run the webhook listener:
-
-```bash
-pnpm run stripe-webhooks
-```
-
-Copy the webhook secret from the output and add it to your `.env`:
-
-```bash
-STRIPE_WEBHOOK_SECRET="whsec_..."
-```
-
-> **Note**: Each time you want to use webhooks during development, you'll need to run `pnpm stripe-webhooks` to forward Stripe events to your local application. The webhook secret remains the same.
-
-### Uploadthing
-
-[Uploadthing](https://uploadthing.com/) is a SaaS for managing images in your application.
-
-Go to your [Uploadthing dashboard](https://uploadthing.com/dashboard/) and get a token:
-
-```bash
-UPLOADTHING_TOKEN='YOUR_TOKEN'
-```
-
-### Starting the Application
-
-Once all environment variables are configured, install dependencies and start the development server:
-
-```bash
-pnpm install
 pnpm dev
 ```
 
-Test that everything works by:
+### 5. Setup GitHub App
 
-- Logging in with GitHub
-- Creating an account
-- Verifying emails are sent
-- Testing other features
+Create a GitHub App with:
+- **Webhook URL**: `https://your-domain.com/api/webhooks/github`
+- **Permissions**: Pull requests (read/write), Contents (read)
+- **Events**: Pull request
 
-## Caching
+## Project Structure
 
-NOW.TS uses **Redis caching** to provide exceptional performance, reducing database queries by ~90% and middleware execution time from ~200-500ms to <20ms.
-
-### Why Redis is Required
-
-Without caching:
-
-- Every page navigation hits the database 2-3 times
-- Middleware validates sessions and organization membership repeatedly
-- External Stripe API calls on every page load
-- Slow response times and high database load
-
-With Redis caching:
-
-- 80-95% of requests served from cache
-- Session validation cached for 5 minutes
-- Organization lookups cached for 5 minutes
-- Stripe subscription data cached for 1 hour
-- **~90% performance improvement**
-
-### Quick Setup
-
-**For local development**:
-
-```bash
-# Start Redis with Docker
-docker run -d -p 6379:6379 redis:alpine
-
-# Add to .env.local
-REDIS_URL=redis://localhost:6379
+```
+app/
+  api/
+    webhooks/github/     # Webhook receiver for PR events
+    github/auth/         # GitHub OAuth callback
+  orgs/[orgSlug]/
+    setup/               # GitHub App installation setup
+    page.tsx             # Dashboard with review history
+src/
+  lib/
+    github.ts            # GitHub API helpers (Octokit, webhook verification, PR comments)
+    mistral.ts           # Direct Mistral AI integration
+    review-agent.ts      # Agentic review with tool calling
+  features/
+    github/              # GitHub setup server actions
+    landing/             # Marketing landing page
+  query/
+    github/              # Database queries for GitHub data
+prisma/
+  schema/
+    schema.prisma        # Database models (installations, repos, reviews, comments)
 ```
 
-**For production** (recommended providers):
+## Demo
 
-- **Railway**: $5/month - [Setup Guide](./docs/redis-setup.md#railway-recommended)
-- **Redis Cloud**: Free tier available - [Setup Guide](./docs/redis-setup.md#redis-cloud-free-tier-available)
-- **Upstash**: Pay-per-use - [Setup Guide](./docs/redis-setup.md#upstash-serverless-redis)
+Live at: [https://mistratonreview.vercel.app](https://mistratonreview.vercel.app)
 
-See [docs/redis-setup.md](./docs/redis-setup.md) for complete setup instructions.
+## Built By
 
-### What's Cached
+- **Melvyn Malherbe** ([@melvynx](https://github.com/Melvynx))
 
-- **Session validation** (5 min TTL) - Better Auth cookie caching + Redis
-- **Organization membership** (5 min TTL) - Middleware checks
-- **User's organizations** (10 min TTL) - Organization list
-- **Stripe subscriptions** (1 hour TTL) - Billing data
+## License
 
-### Cache Invalidation
-
-Caches are automatically invalidated when:
-
-- User updates their profile
-- Organization settings change
-- Membership changes (add/remove members)
-- Subscription updates via Stripe webhooks
-
-### Performance Impact
-
-Real-world metrics:
-
-- Middleware execution: ~200-500ms → <20ms (**~90% faster**)
-- Database queries per request: 2-3 → ~0.2 (**90% reduction**)
-- Cache hit rate: 80-95% after warmup
-- Page load improvement: 30-50% faster overall
-
-## Contributions
-
-Feel free to create a pull request with any changes you think valuable
+MIT

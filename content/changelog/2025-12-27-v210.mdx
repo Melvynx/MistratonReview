@@ -1,37 +1,31 @@
 ---
 date: 2025-12-27
 version: "2.1.0"
-title: "Public Changelog & Content System"
+title: "v2.1 - Dashboard & Changelog"
 image: /images/changelog/v210.png
 status: published
 ---
 
-This release introduces a complete public changelog system with CardStack animations, modernized content pages, and comprehensive test coverage.
+## What's New
+
+v2.1 adds a dashboard for review metrics, a setup page that guides users through GitHub App installation, a public changelog, and a refreshed sunset theme.
 
 ### Features
 
-- **Public changelog system** - Full timeline UI with MDX-based content and draft/published support
-- **Intercepting routes modal** - Click changelog items to open in modal, direct URLs still work
-- **CardStack widget** - Animated changelog cards in organization sidebar with dismiss functionality
-- **Redis-backed dismissal** - Per-user changelog dismissal persistence across sessions
-- **Debug Panel** - Development-only panel with "Reset Changelog" and other debug actions
-- **Active navigation highlighting** - Header navigation now shows which section you're in
-- **Blog posts section** - Sample blog content with authentication, Stripe, Prisma, Next.js, and TailwindCSS guides
+- **Review metrics dashboard** - See total reviews performed, comment counts by severity, and recent PR activity across all installed repositories
+- **Setup page** - A guided flow shown immediately after GitHub App installation that confirms webhook configuration and runs a test review
+- **Public changelog system** - This very page, built with MDX-based content, a timeline UI, and draft/published status per entry
+- **Sunset theme** - A warm orange-to-red color palette applied across the app and landing page
 
-### Refactoring
+### Dashboard Metrics
 
-- **Modernized changelog timeline** - Clean vertical line design with dot markers and compact cards
-- **Content header component** - Reusable header with title, description, and navigation tabs
-- **Docs moved to (layout) route group** - Better organization of public content routes
-- **Post card variants** - Multiple display variants for blog post cards
+The dashboard shows:
 
-### Bug Fixes
+- Total pull requests reviewed (all time and last 30 days)
+- Breakdown of comments by severity (critical, warning, suggestion)
+- List of recently reviewed repositories with links to the latest PR review
+- Estimated time saved based on average human review duration
 
-- **InterceptDialog reset** - Properly reset parallel route state with router.back()
-- **E2E test stability** - Handle session invalidation and correct selectors for sign out flow
+### Setup Page
 
-### Testing
-
-- **23 new unit tests** - changelog-manager, changelog-actions, and intercept-dialog
-- **3 new E2E tests** - Timeline rendering, item navigation, and direct URL access
-- All tests passing with zero skipped
+After installing MistratonReview on a GitHub organization or repository, users are redirected to the setup page. The page verifies that the webhook is reachable, displays the installation ID, and offers a one-click test review against a sample diff to confirm everything is working before the first real PR arrives.

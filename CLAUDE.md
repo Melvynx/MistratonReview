@@ -2,9 +2,45 @@
 
 This file provides guidance to AI Agents.
 
-## About the project <NAME>
+## About the project MistratonReview
 
-If you read this, ask question about the project to fill this part. You need to describe what is the purpose of the project, main feature and goals.
+MistratonReview is an AI-powered GitHub App that automatically reviews every pull request using Mistral AI. It installs on GitHub repositories and, within seconds of opening a PR, posts inline code review comments from a senior AI reviewer - catching bugs, security issues, and performance problems.
+
+### Main Features
+
+- **GitHub App Installation + OAuth**: One-click install via GitHub App with OAuth flow
+- **Automatic PR Review**: Webhook-driven - reviews trigger automatically on PR open/update
+- **Mistral AI Analysis**: Sends PR diffs to Mistral AI with a senior reviewer system prompt
+- **Inline Code Comments**: Posts review comments on exact lines in the PR
+- **Summary Review**: Posts an overview comment with severity breakdown (critical/warning/suggestion)
+- **Landing Page**: Marketing page with "Install on GitHub" CTA
+
+### Goals
+
+1. Eliminate code review bottlenecks by providing instant AI feedback
+2. Catch bugs, security vulnerabilities, and performance issues that human reviewers miss
+3. Provide actionable, specific review comments (not style/formatting nitpicks)
+
+### Target Users
+
+- Development teams looking to speed up their code review process
+- Open source maintainers managing high PR volumes
+- Individual developers wanting a second pair of eyes on their code
+
+### Product Requirements Summary
+
+- P0 (MVP): GitHub App auth, webhook receiver, PR diff fetching, Mistral AI review, inline comments, summary comment, landing page
+- P1: Review severity levels, file skipping (lockfiles, generated code), rate limiting
+- P2: Dashboard for review history, per-repo config file, Slack/Discord notifications
+
+### Architecture Notes
+
+- **Auth**: GitHub App OAuth (custom, NOT Better Auth)
+- **AI**: Mistral AI SDK (`@mistralai/mistralai`) with `mistral-large-latest` model
+- **GitHub API**: Octokit (`@octokit/rest`, `@octokit/auth-app`) for PR interaction
+- **Database**: Stateless for MVP (no database required)
+- **Webhook Flow**: GitHub webhook -> verify signature -> fetch PR diff -> Mistral review -> post inline comments
+- **File Filtering**: Skips lockfiles, minified files, images, generated code, type declarations
 
 ## Important Files
 

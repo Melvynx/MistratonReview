@@ -21,3 +21,88 @@ model Feedback {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model GithubInstallation {
+  id             String       @id @default(nanoid(11))
+  installationId Int          @unique
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountLogin   String
+  accountType    String       @default("Organization")
+
+  repositories GithubRepository[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@map("github_installation")
+}
+
+model GithubRepository {
+  id             String              @id @default(nanoid(11))
+  githubId       Int
+  name           String
+  fullName       String
+  private        Boolean             @default(false)
+  defaultBranch  String              @default("main")
+  installationId String
+  installation   GithubInstallation  @relation(fields: [installationId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  isActive       Boolean             @default(true)
+
+  reviews PullRequestReview[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([githubId, organizationId])
+  @@index([organizationId])
+  @@index([installationId])
+  @@map("github_repository")
+}
+
+model PullRequestReview {
+  id              String           @id @default(nanoid(11))
+  repositoryId    String
+  repository      GithubRepository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+  organizationId  String
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  pullNumber      Int
+  title           String
+  author          String
+  headSha         String
+  status          String           @default("pending")
+  filesReviewed   Int              @default(0)
+  commentsCount   Int              @default(0)
+  criticalCount   Int              @default(0)
+  warningCount    Int              @default(0)
+  suggestionCount Int              @default(0)
+  summary         String?
+  htmlUrl         String
+
+  comments ReviewComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([repositoryId])
+  @@map("pull_request_review")
+}
+
+model ReviewComment {
+  id       String            @id @default(nanoid(11))
+  reviewId String
+  review   PullRequestReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  path     String
+  line     Int
+  severity String
+  body     String
+
+  createdAt DateTime @default(now())
+
+  @@index([reviewId])
+  @@map("review_comment")
+}

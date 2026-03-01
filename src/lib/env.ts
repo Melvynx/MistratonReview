@@ -20,6 +20,10 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production", "test"]),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
     CI: z.coerce.boolean().optional(),
+    GITHUB_APP_ID: z.string().optional(),
+    GITHUB_APP_PRIVATE_KEY: z.string().optional(),
+    GITHUB_WEBHOOK_SECRET: z.string().optional(),
+    MISTRAL_API_KEY: z.string().optional(),
   },
   /**
    * If you add `client` environment variables, you need to add them to

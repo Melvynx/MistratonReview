@@ -3,10 +3,10 @@ import type { AuthRole } from "@/lib/auth/auth-permissions";
 import { isInRoles } from "@/lib/organizations/is-in-roles";
 import {
   CreditCard,
+  GitPullRequest,
   Home,
   Settings,
   TriangleAlert,
-  User,
   User2,
 } from "lucide-react";
 
@@ -52,8 +52,8 @@ export const ORGANIZATION_LINKS: NavigationGroup[] = [
       },
       {
         href: `${ORGANIZATION_PATH}/users`,
-        Icon: User,
-        label: "Users",
+        Icon: GitPullRequest,
+        label: "Reviews",
       },
     ],
   },

@@ -1,29 +1,24 @@
 ---
 date: 2025-08-23
 version: "1.5.0"
-title: "Admin Dashboard & Documentation"
+title: "v1.5 - Smart File Filtering & Severity Levels"
 image: /images/changelog/v150.png
 status: published
 ---
 
 ## What's New
 
-This release introduces a comprehensive admin feedback system and documentation improvements.
+This release focuses on review quality. MistratonReview now skips files that do not benefit from AI review and uses severity indicators to make findings easier to scan.
 
 ### Features
 
-- **GridBackground component** for customizable visual design
-- **Admin feedback system** with filters, tables, and detailed views
-- **Documentation system** with dynamic content and sidebar navigation
-- **Last used provider tracking** for enhanced sign-in experience
-- **Contact and about pages**
+- **Smart file filtering** - automatically skips lockfiles (`package-lock.json`, `pnpm-lock.yaml`), minified files, images, generated code, and TypeScript declaration files (`.d.ts`)
+- **Severity-based indicators** in inline comments to distinguish critical bugs from warnings and suggestions
+- **Improved diff position mapping** for accurate inline comment placement even on complex multi-hunk diffs
+- **Reduced noise** by focusing the review on files where the AI adds real value
 
-### Maintenance
+### Why This Matters
 
-- Update Next.js to 15.5.0
-- Update React to 19.1.1
-- Update AI SDK to v5
-- Update all Radix UI component packages
-- Update testing dependencies and build tools
-- Claude Code integration with new agents, commands, and formatting hooks
-- Improve API file organization and documentation structure
+Reviewing generated or dependency files produces false positives and dilutes the signal from the AI. By filtering these files before sending the diff to Mistral AI, each review is more focused and the token usage is lower, which also reduces latency.
+
+The severity levels make it easy to triage reviews at a glance - a pull request with only suggestions is safe to merge, while one with critical findings needs attention before approval.

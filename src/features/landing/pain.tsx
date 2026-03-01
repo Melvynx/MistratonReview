@@ -11,31 +11,31 @@ export const PainSection = () => {
       className="flex flex-col items-center justify-center gap-4"
     >
       <div className="flex w-full flex-col items-center gap-3 lg:gap-4 xl:gap-6">
-        <Typography variant="h1">I love posting on Threads...</Typography>
+        <Typography variant="h1">Code review slows everyone down...</Typography>
         <Typography variant="large">
-          But I loose my time going and publishing each days
+          PRs pile up, bugs slip through, and reviewers burn out
         </Typography>
         <div className="flex items-start gap-4 max-lg:flex-col">
           <div className="flex-1 rounded-lg bg-red-500/20 p-4 lg:p-6">
             <Typography variant="h3" className="text-red-500">
-              😞 Posting without Threader
+              Without MistratonReview
             </Typography>
             <ul className="text-foreground/80 mt-4 ml-4 flex list-disc flex-col gap-2 text-lg">
-              <li>Going on Thread every day to post</li>
-              <li>Be distracted when I go on the app</li>
-              <li>Losing track of my post</li>
-              <li>Incosistent</li>
+              <li>Waiting hours for a reviewer to be available</li>
+              <li>PRs pile up and block the team</li>
+              <li>Bugs slip through when reviewers are fatigued</li>
+              <li>Inconsistent review quality across PRs</li>
             </ul>
           </div>
           <div className="flex-1 rounded-lg bg-green-500/20 p-4 lg:p-6">
             <Typography variant="h3" className="text-green-500">
-              😎 Posting WITH Threader
+              With MistratonReview
             </Typography>
             <ul className="text-foreground/80 mt-4 ml-4 flex list-disc flex-col gap-2 text-lg">
-              <li>Schedule your post on the Threader UI</li>
-              <li>Avoiding opening the app every day</li>
-              <li>See excatly what you have scheduled</li>
-              <li>Be consistent</li>
+              <li>Every PR reviewed in seconds, automatically</li>
+              <li>Bugs caught before merge, not after deploy</li>
+              <li>Consistent, thorough reviews 24/7</li>
+              <li>Human reviewers focus on architecture decisions</li>
             </ul>
           </div>
         </div>

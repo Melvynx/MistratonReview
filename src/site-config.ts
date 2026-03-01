@@ -1,12 +1,13 @@
 export const SiteConfig = {
-  title: "NOW.TS",
-  description: "Collect and showcase powerful video and text testimonials",
-  prodUrl: "https://demo.nowts.app",
-  appId: "nowts",
-  domain: "demo.nowts.app",
+  title: "MistratonReview",
+  description:
+    "AI-powered code review for every pull request, powered by Mistral AI",
+  prodUrl: "https://mistratonreview.vercel.app",
+  appId: "mistraton-review",
+  domain: "mistratonreview.vercel.app",
   appIcon: "/images/icon.png",
   company: {
-    name: "NOW.TS LLC",
+    name: "MistratonReview",
     address: "421 Rue de Paris, France", // Remove if not needed
   },
   brand: {

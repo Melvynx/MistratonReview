@@ -1,37 +1,27 @@
 ---
 date: 2025-08-13
 version: "1.0.0"
-title: "Initial Release"
+title: "MistratonReview v1.0 - AI Code Review Launches"
 image: /images/changelog/v100.png
 status: published
 ---
 
 ## What's New
 
-Complete admin dashboard with comprehensive management interfaces.
+MistratonReview is live. Install the GitHub App on any repository and get instant AI-powered code reviews on every pull request, powered by Mistral AI.
 
-### Features
+### Core Features
 
-- **Complete admin dashboard** with sidebar layout and routing
-- **Admin-only authentication guards** with role checking
-- **User management interface** with search, pagination, and role filtering
-- **User detail pages** with session management and impersonation
-- **Organization management interface** with member management
-- **Subscription management** with plan changes and billing controls
-- **Payment history** with Stripe integration for admin oversight
-- **AutomaticPagination** reusable component
+- **GitHub App installation** with one-click setup via OAuth flow
+- **Automatic PR review** triggered by webhooks on PR open and update events
+- **Mistral AI analysis** using `mistral-large-latest` with a senior reviewer system prompt
+- **Inline code comments** posted on exact diff lines in the pull request
+- **Summary review comment** with an overview of all findings and their severity breakdown
+- **Severity levels** - critical, warning, and suggestion categories for every comment
+- **Landing page** with "Install on GitHub" call-to-action and feature highlights
 
-### Refactoring
+### How It Works
 
-- Move billing ownership from User to Organization level
-- Migrate stripeCustomerId from User model to Organization model
-- Update webhook handlers for organization-based billing
-- Replace Better-Auth subscription methods with custom server actions
-- Billing page with Card components and Typography
+When a pull request is opened or updated, GitHub sends a webhook to MistratonReview. The app fetches the PR diff, sends it to Mistral AI with a structured prompt, and posts the resulting review comments directly back to GitHub as inline annotations on the changed lines.
 
-### Bug Fixes
-
-- Remove all `any` type usage in Stripe webhook handlers
-- Type compatibility issues across billing system
-- Card hover effects replaced with clean styling
-- Organization/user names now clickable instead of separate View buttons
+The review summary comment appears at the top of the PR timeline and breaks down findings by severity so reviewers can prioritize critical issues first.
