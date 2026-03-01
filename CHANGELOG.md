@@ -2,6 +2,10 @@
 
 ## 2026-03-01
 
+REFACTOR: Rewrite review agent with multi-phase orchestration (context gathering -> per-file deep review -> severity calibration)
+FIX: Harden path traversal protection with segment-based blocking and sensitive file extensions
+FIX: Fail fast when MISTRAL_API_KEY is not configured
+FIX: Prevent duplicate comments from mutable closure in tool callbacks
 FEATURE: Add database models for GitHub installations, repositories, PR reviews, and review comments
 FEATURE: Add query helpers for org installations, repositories, reviews, and review stats
 FEATURE: Build setup page with interactive repo selection after GitHub App installation
