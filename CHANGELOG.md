@@ -2,7 +2,10 @@
 
 ## 2026-03-01
 
+FIX: Remove extra top padding in dashboard cards (double padding from Card py-6 + CardContent pt-6)
 FEATURE: Split "Manage repos" into two buttons - "Manage GitHub access" (external) and "Manage repos" (repo selector)
+FIX: Read files from PR head commit instead of default branch (prevents false positives from stale code)
+FIX: Improve markdown formatting in review comments (proper code blocks)
 FIX: Filter non-source files from review (.claude/, .md, .txt, .env, etc.)
 FIX: Add 1s delay between file reviews to avoid Mistral rate limits
 FIX: Better error messages for GitHub 403 permission errors in agent tools

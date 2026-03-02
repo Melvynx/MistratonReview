@@ -86,6 +86,7 @@ export async function POST(request: Request) {
       owner,
       repo,
       pullNumber,
+      commitId,
       files: filesToReview.map((f) => ({
         filename: f.filename,
         patch: f.patch,

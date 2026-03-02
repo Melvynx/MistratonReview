@@ -11,6 +11,7 @@ type ReviewAgentParams = {
   owner: string;
   repo: string;
   pullNumber: number;
+  commitId: string;
   files: { filename: string; patch: string; status: string }[];
   prTitle: string;
   prBody: string;
@@ -44,10 +45,15 @@ function isBlockedPath(path: string): boolean {
   return false;
 }
 
-function createReadFileTool(octokit: Octokit, owner: string, repo: string) {
+function createReadFileTool(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  ref: string,
+) {
   return tool({
     description:
-      "Read a source file from the repository. Use to understand imports, check consumers, read config files, or get context.",
+      "Read a source file from the repository at the PR's head commit. Use to understand imports, check consumers, read config files, or get context.",
     inputSchema: z.object({
       path: z.string().describe("File path relative to repo root"),
     }),
@@ -61,6 +67,7 @@ function createReadFileTool(octokit: Octokit, owner: string, repo: string) {
           owner,
           repo,
           path: input.path,
+          ref,
         });
         if ("content" in data && data.content) {
           const content = Buffer.from(data.content, "base64").toString("utf-8");
@@ -85,6 +92,7 @@ function createListDirectoryTool(
   octokit: Octokit,
   owner: string,
   repo: string,
+  ref: string,
 ) {
   return tool({
     description:
@@ -104,6 +112,7 @@ function createListDirectoryTool(
           owner,
           repo,
           path: input.path === "." ? "" : input.path,
+          ref,
         });
         if (Array.isArray(data)) {
           return data
@@ -156,6 +165,7 @@ async function gatherProjectContext(
   octokit: Octokit,
   owner: string,
   repo: string,
+  ref: string,
   prTitle: string,
   prBody: string,
   fileList: string,
@@ -175,8 +185,8 @@ ${fileList}
 
 Start by reading package.json, then tsconfig.json, then explore the project structure. After you understand the project, write a comprehensive summary of your findings. Include specific details like the JSX transform mode, TypeScript settings, framework version, etc.`,
       tools: {
-        readFile: createReadFileTool(octokit, owner, repo),
-        listDirectory: createListDirectoryTool(octokit, owner, repo),
+        readFile: createReadFileTool(octokit, owner, repo, ref),
+        listDirectory: createListDirectoryTool(octokit, owner, repo, ref),
       },
       stopWhen: stepCountIs(8),
       temperature: 0.1,
@@ -237,7 +247,19 @@ ${projectContext}
 - Import ordering
 - Documentation or comments
 - "You could also do X" when the current approach works fine
-- Unused variables/props unless they indicate an actual bug (like a prop that SHOULD be used but isn't wired up)`;
+- Unused variables/props unless they indicate an actual bug (like a prop that SHOULD be used but isn't wired up)
+
+## Comment Formatting (GitHub Markdown)
+Write each comment body with proper GitHub markdown:
+1. Start with a clear 1-sentence problem statement
+2. Explain WHY it matters in this specific context
+3. Provide a concrete fix using a fenced code block with language tag:
+
+\`\`\`ts
+// your fix here
+\`\`\`
+
+Make sure code blocks have a blank line before and after them. Never put code inline when it spans multiple lines.`;
 }
 
 async function reviewSingleFile(
@@ -247,6 +269,7 @@ async function reviewSingleFile(
   octokit: Octokit,
   owner: string,
   repo: string,
+  ref: string,
 ): Promise<ReviewComment[]> {
   logger.info(`[agent] Phase 2: Reviewing ${file.filename}...`);
 
@@ -265,8 +288,8 @@ ${file.patch}
 
 Analyze this diff. If you need to understand how this code is used by other files, use readFile to check consumers/importers. Then call submitFileReview with your findings.`,
       tools: {
-        readFile: createReadFileTool(octokit, owner, repo),
-        listDirectory: createListDirectoryTool(octokit, owner, repo),
+        readFile: createReadFileTool(octokit, owner, repo, ref),
+        listDirectory: createListDirectoryTool(octokit, owner, repo, ref),
         submitFileReview: tool({
           description:
             "Submit your review for this file. Call once when done. 0 comments is fine if no real issues found.",
@@ -458,7 +481,7 @@ Calibrate these comments. Remove false positives. Adjust severity. Then call sub
 export async function runReviewAgent(
   params: ReviewAgentParams,
 ): Promise<AgentResult> {
-  const { octokit, owner, repo, files, prTitle, prBody } = params;
+  const { octokit, owner, repo, commitId, files, prTitle, prBody } = params;
 
   const apiKey = process.env.MISTRAL_API_KEY;
   if (!apiKey) {
@@ -484,6 +507,7 @@ export async function runReviewAgent(
       octokit,
       owner,
       repo,
+      commitId,
       prTitle,
       prBody,
       fileList,
@@ -502,6 +526,7 @@ export async function runReviewAgent(
         octokit,
         owner,
         repo,
+        commitId,
       );
       allComments.push(...fileComments);
       // Small delay between files to avoid Mistral rate limits
