@@ -2,6 +2,10 @@
 
 ## 2026-03-01
 
+FEATURE: Split "Manage repos" into two buttons - "Manage GitHub access" (external) and "Manage repos" (repo selector)
+FIX: Filter non-source files from review (.claude/, .md, .txt, .env, etc.)
+FIX: Add 1s delay between file reviews to avoid Mistral rate limits
+FIX: Better error messages for GitHub 403 permission errors in agent tools
 REFACTOR: Rewrite review agent with multi-phase orchestration (context gathering -> per-file deep review -> severity calibration)
 FIX: Harden path traversal protection with segment-based blocking and sensitive file extensions
 FIX: Fail fast when MISTRAL_API_KEY is not configured

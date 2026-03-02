@@ -5,7 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Layout, LayoutContent, LayoutHeader, LayoutTitle } from "@/features/page/layout";
+import {
+  Layout,
+  LayoutContent,
+  LayoutHeader,
+  LayoutTitle,
+} from "@/features/page/layout";
 import { buttonVariants } from "@/components/ui/button";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +32,8 @@ export default async function SetupPage(props: PageProps) {
   const org = await getRequiredCurrentOrgCache();
   const installationId = Number(searchParams.installation_id);
 
+  const isManageMode = searchParams.manage === "true";
+
   const existingInstallation = await prisma.githubInstallation.findFirst({
     where: { organizationId: org.id },
     select: {
@@ -40,7 +47,11 @@ export default async function SetupPage(props: PageProps) {
     },
   });
 
-  if (existingInstallation && existingInstallation.repositories.length > 0) {
+  if (
+    !isManageMode &&
+    existingInstallation &&
+    existingInstallation.repositories.length > 0
+  ) {
     return (
       <Layout>
         <LayoutHeader>
@@ -113,10 +124,7 @@ export default async function SetupPage(props: PageProps) {
         <LayoutTitle>Select Repositories</LayoutTitle>
       </LayoutHeader>
       <LayoutContent>
-        <SetupRepos
-          installationId={installationId}
-          orgSlug={params.orgSlug}
-        />
+        <SetupRepos installationId={installationId} orgSlug={params.orgSlug} />
       </LayoutContent>
     </Layout>
   );

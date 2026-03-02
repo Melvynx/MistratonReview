@@ -34,6 +34,13 @@ const SKIP_PATTERNS = [
   /generated/i,
   /\.d\.ts$/,
   /\.map$/,
+  /^\.claude\//,
+  /^\.vscode\//,
+  /^\.idea\//,
+  /\.md$/,
+  /\.mdx$/,
+  /\.txt$/,
+  /\.env/,
 ];
 
 export function countBySeverity(comments: ReviewComment[]): SeverityCounts {

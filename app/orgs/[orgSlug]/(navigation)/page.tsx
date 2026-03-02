@@ -242,15 +242,24 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <Typography variant="h3">Monitored Repos</Typography>
-              <Button variant="outline" size="sm" asChild>
-                <Link
-                  href="https://github.com/apps/mistratonreview/installations/new"
-                  target="_blank"
-                >
-                  Manage repos
-                  <ExternalLink className="ml-2 size-3" />
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" asChild>
+                  <Link
+                    href="https://github.com/apps/mistratonreview/installations/new"
+                    target="_blank"
+                  >
+                    Manage GitHub access
+                    <ExternalLink className="ml-2 size-3" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link
+                    href={`/orgs/${org.slug}/setup?installation_id=${installation.installationId}&manage=true`}
+                  >
+                    Manage repos
+                  </Link>
+                </Button>
+              </div>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {installation.repositories.map((repo) => (

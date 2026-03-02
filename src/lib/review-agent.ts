@@ -70,7 +70,11 @@ function createReadFileTool(octokit: Octokit, owner: string, repo: string) {
           return `File: ${input.path}\n\n${content}`;
         }
         return `${input.path} is a directory.`;
-      } catch {
+      } catch (err) {
+        const status = (err as { status?: number }).status;
+        if (status === 403) {
+          return `Permission denied: cannot read ${input.path}. The GitHub App may not have "contents: read" permission for this repository. Skip reading files and use the diff context instead.`;
+        }
         return `Could not read ${input.path} - file may not exist.`;
       }
     },
@@ -109,7 +113,11 @@ function createListDirectoryTool(
             .join("\n");
         }
         return `${input.path} is a file, not a directory.`;
-      } catch {
+      } catch (err) {
+        const status = (err as { status?: number }).status;
+        if (status === 403) {
+          return `Permission denied: cannot list ${input.path}. The GitHub App may not have "contents: read" permission. Use the diff context instead.`;
+        }
         return `Could not list ${input.path}.`;
       }
     },
@@ -485,17 +493,22 @@ export async function runReviewAgent(
     // Phase 2: Review each file individually with full project context
     // Sequential is intentional - each file gets deep, focused analysis
     const allComments: ReviewComment[] = [];
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
       // eslint-disable-next-line no-await-in-loop
       const fileComments = await reviewSingleFile(
         mistral,
         projectContext,
-        file,
+        files[i],
         octokit,
         owner,
         repo,
       );
       allComments.push(...fileComments);
+      // Small delay between files to avoid Mistral rate limits
+      if (i < files.length - 1) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     }
     logger.info(
       `[agent] All files reviewed: ${allComments.length} total comments`,
